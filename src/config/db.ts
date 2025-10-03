@@ -1,5 +1,5 @@
  import mongoose from "mongoose";
- const MONGO_URI = process.env.MONGO_URI as string|| "mongodb+srv://shifa_db_ali12:shifa_18ali@cluster0.hegt8xi.mongodb.net/lms?retryWrites=true&w=majority&appName=Cluster0";
+ const MONGO_URI = process.env.MONGO_URI as string|| "mongodb+srv://shifa_db_ali12:shifa_18ali@cluster0.hegt8xi.mongodb.net/lms";
 
 export const connectDb=async () : Promise<void> =>{
     
