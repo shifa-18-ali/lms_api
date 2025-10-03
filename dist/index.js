@@ -10,7 +10,7 @@ const coursesRoutes_1 = __importDefault(require("./Routes/coursesRoutes"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-mongoose_1.default.connect('mongodb://localhost:27017/lms')
+mongoose_1.default.connect('mongodb+srv://shifa_db_ali12:shifa_18ali@cluster0.hegt8xi.mongodb.net/lms')
     .then(() => console.log('db connected'));
 app.use('', coursesRoutes_1.default);
 app.listen(5000, () => {
