@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Mapping from "../Model/MappingModel";
-import Course from "../Model/coursesModel.js";
+import Course from "../Model/coursesModel";
 import Student from "../Model/studentModel";
 import Teacher from "../Model/teacherModel";
 // POST -> Save mapping
