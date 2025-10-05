@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const MappingSchema = new mongoose.Schema({
-  userId: {
+  studentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Student",   // assuming you have a User model
     required: true,
