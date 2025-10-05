@@ -13,7 +13,21 @@
         Create Course : (method:POST)- /createCourse
         Get Courses :    (method :GET) - /getCourse
     Get Course By Id : (method :GET) - /getCourseById/:_id
-        
+#   3. Teacher Routes 
+     Create Teacher : (method:POST)- /createTeacher
+        Get Teachers :    (method :GET) - /getTeacher
+    Get Teacher By Id : (method :GET) - /getTeacherbyid/:id
+    Update Teacher By Id : (method :PUT) - /upTeacher/:id
+    Delete Teacher By Id : (method :DELETE) - /delTeacher/:id
+
+#   4. Student Routes 
+    Create Student : (method:POST)- /createStudent
+    Get Students :    (method :GET) - /getStudents
+    Get Students By Id : (method :GET) - /getStudentById/:id
+    Update Students By Id : (method :PUT) - /upStudent/:id
+    Delete Students By Id : (method :DELETE) - /delStudent/:id
+
+
 # Example -https://lms-api-f87o.onrender.com/ 
 #                    OR
 #           http://localhost:5000/getCourse
