@@ -6,6 +6,7 @@ import coursesRoutes from './Routes/coursesRoutes'
 import userRoutes from './Routes/userRoutes'
 import seed from './Routes/json.Routes'
 import courseMappingRoutes from './Routes/courseMappingRoutes'
+import teacherRoutes from './Routes/teacherRoutes'
 const app:Application=express()
 import {connectDb} from './config/db'
 
@@ -18,6 +19,7 @@ app.use('',coursesRoutes)
 app.use('',userRoutes)
 app.use('',seed)
 app.use('',courseMappingRoutes)
+app.use('',teacherRoutes)
 const port = process.env.PORT || 5000;
 app.listen(port,()=>{
     console.log(`server is running on port ${port}`)
