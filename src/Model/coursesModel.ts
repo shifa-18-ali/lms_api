@@ -23,7 +23,7 @@ const moduleSchema = new mongoose.Schema({
 });
 
 const courseSchema = new mongoose.Schema({
-  courseId:{ type: String, required: true },
+  
   courseTitle: { type: String, required: true },
   url: { type: String }, // image or thumbnail
   description: { type: String },
