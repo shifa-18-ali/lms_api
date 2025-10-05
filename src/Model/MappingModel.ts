@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const courseMappingSchema = new mongoose.Schema({
+const MappingSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",   // assuming you have a User model
@@ -10,8 +10,13 @@ const courseMappingSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Course", // reference Course model
     required: true,
+  },
+   teacherId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Teacher", // reference Course model
+    required: true,
   }
 }, { timestamps: true });
 
-const CourseMapping = mongoose.model("CourseMapping", courseMappingSchema);
-export default CourseMapping;
+const Mapping = mongoose.model("Mapping", MappingSchema);
+export default Mapping;

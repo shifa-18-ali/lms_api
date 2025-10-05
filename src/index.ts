@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import coursesRoutes from './Routes/coursesRoutes'
 import userRoutes from './Routes/userRoutes'
 import seed from './Routes/json.Routes'
-import courseMappingRoutes from './Routes/courseMappingRoutes'
+import MappingRoutes from './Routes/MappingRoutes'
 import teacherRoutes from './Routes/teacherRoutes'
 import studentRoutes from './Routes/studentRoutes'
 const app:Application=express()
@@ -19,7 +19,7 @@ connectDb()
 app.use('',coursesRoutes)
 app.use('',userRoutes)
 app.use('',seed)
-app.use('',courseMappingRoutes)
+app.use('',MappingRoutes)
 app.use('',teacherRoutes)
 app.use('',studentRoutes)
 const port = process.env.PORT || 5000;

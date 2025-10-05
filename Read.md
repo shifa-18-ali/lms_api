@@ -26,7 +26,12 @@
     Get Students By Id : (method :GET) - /getStudentById/:id
     Update Students By Id : (method :PUT) - /upStudent/:id
     Delete Students By Id : (method :DELETE) - /delStudent/:id
-
+#   5. Mapping Routes (Teacher,Students,Course)
+    Create Mapping : (method:POST)- /createMapping
+    Get Mapping data :    (method :GET) - /getMappings
+    Get Techers data By Id : (method :GET) - /teacher/:teacherId
+    Get Students data By Id : (method :GET) - /student/:studentId"
+    Delete Mapping By Id : (method :DELETE) - /delmapp/:id
 
 # Example -https://lms-api-f87o.onrender.com/ 
 #                    OR
