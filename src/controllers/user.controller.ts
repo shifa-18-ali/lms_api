@@ -72,7 +72,7 @@ export const register = async (req: Request, res: Response) => {
     await newUser.save();
     return res.status(201).json({ message: `${role} registered successfully`});
   } catch (error: any) {
-    return res.status(500).json({ message: "Registration failed", error: error.mesage });
+    return res.status(500).json({ message: "Registration failed", error: error});
   }
 };
 
