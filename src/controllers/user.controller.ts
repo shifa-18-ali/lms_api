@@ -25,7 +25,18 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const register = async (req:Request, res:Response) => {
   try {
-    const { name, email, password, role, dob, className, subject, experience } = req.body;
+    const { name, email, password, role, experience,
+
+dob,
+phoneNo,
+address,
+bio,
+qualification,
+specialization,
+assigned_courses,
+profile_picture,
+gender
+ } = req.body;
 
     // Check if user exists
     const existingUser = await User.findOne({ email });
@@ -40,10 +51,20 @@ export const register = async (req:Request, res:Response) => {
 
     // Save in role-specific collection
     if (role === "student") {
-      const student = new Student({ userId: savedUser._id, dob, class: className });
+const student = new Student({ userId: savedUser._id, experience,
+
+dob,
+phoneNo,
+address,
+bio,
+qualification,
+specialization,
+assigned_courses,
+profile_picture,
+ });
       await student.save();
     } else if (role === "teacher") {
-      const teacher = new Teacher({ userId: savedUser._id, subject, experience });
+      const teacher = new Teacher({ userId: savedUser._id, gender, dob});
       await teacher.save();
     }
 
