@@ -2,11 +2,16 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   { // custom user id
-    name: { type: String, required: true },
+  //   name: { type: String, required: true },
+  // email: { type: String, required: true, unique: true },
+  // password: { type: String, required: true },
+  // role: { type: String, enum: ["teacher", "student"], required: true },
+  // profileId: { type: mongoose.Schema.Types.ObjectId, refPath: "role" } 
+   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ["Teacher", "Student"], required: true },
-  profileId: { type: mongoose.Schema.Types.ObjectId, refPath: "role" } 
+  role: { type: String, enum: ["student", "teacher"], required: true },
+  createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );

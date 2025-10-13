@@ -21,41 +21,39 @@ export const getUser = async (req: Request, res: Response) => {
 
 
 
-export const register = async (req: Request, res: Response) => {
+
+
+export const register = async (req:Request, res:Response) => {
   try {
-    const { name, email, password, role, subject, experience, qualifications, dob } = req.body;
+    const { name, email, password, role, dob, className, subject, experience } = req.body;
 
-    // check if email already exists
+    // Check if user exists
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "Email already registered" });
+    if (existingUser) return res.status(400).json({ message: "User already exists" });
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    let profile: any;
-    if (role === "teacher") {
-      profile = await Teacher.create({ name, subject, experience, qualifications });
-    } else if (role === "student") {
-      profile = await Student.create({ name, dob });
-    } else {
-      return res.status(400).json({ message: "Invalid role" });
+    // Create user
+    const user = new User({ name, email, password: hashedPassword, role });
+    const savedUser = await user.save();
+
+    // Save in role-specific collection
+    if (role === "student") {
+      const student = new Student({ userId: savedUser._id, dob, class: className });
+      await student.save();
+    } else if (role === "teacher") {
+      const teacher = new Teacher({ userId: savedUser._id, subject, experience });
+      await teacher.save();
     }
 
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      role,
-      profileId: profile._id
-    });
-
-    res.status(201).json({
-      message: `${role} registered successfully`,
-      user
-    });
+    res.status(201).json({ message: "User registered successfully", user: savedUser });
   } catch (err) {
-    res.status(500).json({ message: "Registration failed", error: err });
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 };
+;
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
