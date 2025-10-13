@@ -4,11 +4,11 @@ const StudentSchema: Schema = new Schema(
   {
  
     // name: { type: String, required: true },
-   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  dob: { type: Date },
+  
+ dob:{type: Date, required: true},
  gender: { type: String ,required:true},
    
-  
+   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );
