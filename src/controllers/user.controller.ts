@@ -45,6 +45,7 @@ export const register = async (req: Request, res: Response) => {
     let profile: any;
     if (role === "teacher") {
       profile = await Teacher.create({     name,
+        email,
       role,
       gender,
       dob,
@@ -56,7 +57,7 @@ export const register = async (req: Request, res: Response) => {
       assigned_courses,
       profile_picture, });
     } else if (role === "student") {
-      profile = await Student.create({ name });
+      profile = await Student.create({ name,email });
     } else {
       return res.status(400).json({ message: "Invalid role" });
     }
