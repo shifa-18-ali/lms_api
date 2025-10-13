@@ -35,7 +35,7 @@ qualification,
 specialization,
 assigned_courses,
 profile_picture,
-gender
+
  } = req.body;
 
     // Check if user exists
@@ -51,7 +51,7 @@ gender
 
     // Save in role-specific collection
     if (role === "student") {
-const student = new Student({ userId: savedUser._id, gender,dob
+const student = new Student({ userId: savedUser._id, dob
  });
       await student.save();
     } else if (role === "teacher") {

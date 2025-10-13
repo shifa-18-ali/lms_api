@@ -6,7 +6,7 @@ const StudentSchema: Schema = new Schema(
     // name: { type: String, required: true },
   
  dob:{type: Date, required: true},
- gender: { type: String },
+ 
    
    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   },
