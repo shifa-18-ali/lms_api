@@ -51,7 +51,11 @@ gender
 
     // Save in role-specific collection
     if (role === "student") {
-const student = new Student({ userId: savedUser._id, experience,
+const student = new Student({ userId: savedUser._id, gender,dob
+ });
+      await student.save();
+    } else if (role === "teacher") {
+      const teacher = new Teacher({ userId: savedUser._id, experience,
 
 dob,
 phoneNo,
@@ -60,11 +64,7 @@ bio,
 qualification,
 specialization,
 assigned_courses,
-profile_picture,
- });
-      await student.save();
-    } else if (role === "teacher") {
-      const teacher = new Teacher({ userId: savedUser._id, gender, dob});
+profile_picture,});
       await teacher.save();
     }
 
