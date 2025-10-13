@@ -19,81 +19,53 @@ export const getUser = async (req: Request, res: Response) => {
 
 
 
-export const register = async (req:Request, res:Response) => {
+
+
+export const register = async (req: Request, res: Response) => {
   try {
-    const {
-      name,
-      email,
-      password,
-      role,
-      gender,
-      dob,
-      phoneNo,
-      address,
-      bio,
-      qualification,
-      specialization,
-      assigned_courses,
-      profile_picture,
-    } = req.body;
+    const { name, email, password, role, subject, experience, qualifications, dob } = req.body;
 
-    if (!["teacher", "student"].includes(role)) {
-      return res.status(400).json({ message: "Invalid role" });
-    }
-
+    // check if email already exists
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
-    }
+    if (existingUser) return res.status(400).json({ message: "Email already registered" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    let profile;
-
-    // Step 1: Create profile first
+    let profile: any;
     if (role === "teacher") {
-      profile = await Teacher.create({
-        name,
-        email,
-        qualification,
-        specialization,
-        assigned_courses,
-      });
+      profile = await Teacher.create({ name, subject, experience, qualifications });
     } else if (role === "student") {
-      profile = await Student.create({
-        name,
-      
-      });
+      profile = await Student.create({ name, dob });
+    } else {
+      return res.status(400).json({ message: "Invalid role" });
     }
 
-    // Step 2: Create user with profileId directly
-    const newUser = await User.create({
+    const user = await User.create({
       name,
       email,
       password: hashedPassword,
       role,
-      gender,
-      dob,
-      phoneNo,
-      address,
-      bio,
-      qualification,
-      specialization,
-      assigned_courses,
-      profile_picture,
-       profileId: profile ? profile._id : null, // link here directly
+      profileId: profile._id
     });
 
     res.status(201).json({
       message: `${role} registered successfully`,
-      user: newUser,
-      profile,
+      user
     });
-  } catch (error) {
-    console.error("Registration error:", error);
-    res.status(500).json({ message: "Registration failed", error: error });
+  } catch (err) {
+    res.status(500).json({ message: "Registration failed", error: err });
   }
 };
+
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find().populate("profileId");
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching users", error: err });
+  }
+};
+;
 ;
 ;
 
