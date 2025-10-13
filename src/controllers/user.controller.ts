@@ -41,10 +41,27 @@ export const register = async (req: Request, res: Response) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      gender,
+      dob,
+      phoneNo,
+      address,
+      role,
+      bio,
+      qualification,
+      specialization,
+      assigned_courses,
+      profile_picture,
+    });
 
+    
     let profile: any;
     if (role === "teacher") {
       profile = await Teacher.create({     name,
+        profileId: newUser._id,
         email,
       role,
       gender,
@@ -57,20 +74,13 @@ export const register = async (req: Request, res: Response) => {
       assigned_courses,
       profile_picture, });
     } else if (role === "student") {
-      profile = await Student.create({ name,email });
+      profile = await Student.create({   profileId: newUser._id,name });
     } else {
       return res.status(400).json({ message: "Invalid role" });
     }
-    const newUser = new User({
-      name,
-      email,
-      password: hashedPassword,
-    gender,
-    role,
-     profileId:profile._id
-    });
+    newUser.profileId = profile._id;
+  await newUser.save();
 
-    await newUser.save();
     return res.status(201).json({ message: `${role} registered successfully`});
   } catch (error: any) {
     return res.status(500).json({ message: "Registration failed", error: error});
