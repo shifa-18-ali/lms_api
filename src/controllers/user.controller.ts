@@ -5,6 +5,7 @@ import Student from "../Model/studentModel";
 const router = express.Router();
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { Types } from "mongoose";
 
 const secretKey = "mySuperSecretKey123";
 export const getUser = async (req: Request, res: Response) => {
@@ -15,7 +16,10 @@ export const getUser = async (req: Request, res: Response) => {
     return res.status(400).json({  message: "Error fetching users",error:err});
   }
 };
-export const register = async (req: Request, res: Response) => {
+
+
+
+export const register = async (req:Request, res:Response) => {
   try {
     const {
       name,
@@ -32,60 +36,66 @@ export const register = async (req: Request, res: Response) => {
       assigned_courses,
       profile_picture,
     } = req.body;
+
     if (!["teacher", "student"].includes(role)) {
       return res.status(400).json({ message: "Invalid role" });
     }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({
+
+    let profile;
+
+    // Step 1: Create profile first
+    if (role === "teacher") {
+      profile = await Teacher.create({
+        name,
+        email,
+        qualification,
+        specialization,
+        assigned_courses,
+      });
+    } else if (role === "student") {
+      profile = await Student.create({
+        name,
+      
+      });
+    }
+
+    // Step 2: Create user with profileId directly
+    const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
+      role,
       gender,
       dob,
       phoneNo,
       address,
-      role,
       bio,
       qualification,
       specialization,
       assigned_courses,
       profile_picture,
+       profileId: profile ? profile._id : null, // link here directly
     });
 
-    
-    let profile: any;
-    if (role === "teacher") {
-      profile = await Teacher.create({     name,
-        profileId: newUser._id,
-        email,
-      role,
-      gender,
-      dob,
-      phoneNo,
-      address,
-      bio,
-      qualification,
-      specialization,
-      assigned_courses,
-      profile_picture, });
-    } else if (role === "student") {
-      profile = await Student.create({   profileId: newUser._id,name });
-    } else {
-      return res.status(400).json({ message: "Invalid role" });
-    }
-    newUser.profileId = profile._id;
-  await newUser.save();
-
-    return res.status(201).json({ message: `${role} registered successfully`});
-  } catch (error: any) {
-    return res.status(500).json({ message: "Registration failed", error: error});
+    res.status(201).json({
+      message: `${role} registered successfully`,
+      user: newUser,
+      profile,
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.status(500).json({ message: "Registration failed", error: error });
   }
 };
+;
+;
 
 // 🔹 Login user
 export const login = async (req: Request, res: Response) => {
