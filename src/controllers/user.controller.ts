@@ -70,9 +70,10 @@ profile_picture,});
 
     res.status(201).json({ message: "User registered successfully", user: savedUser });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
+  console.error("Registration Error Details:", err); // 👈 this logs the exact error
+  res.status(500).json({ message: "Server error", error: err });
+}
+
 };
 ;
 
