@@ -3,7 +3,7 @@ import axios from "axios";
 export const translateText = async (text: string, targetLang: string) => {
   try {
     const response = await axios.post(
-      "https://translate.argosopentech.com/translate",
+      "https://libretranslate.com/languages",
       {
         q: text,
         source: "auto",
