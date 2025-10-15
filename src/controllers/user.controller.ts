@@ -126,17 +126,28 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const getUserById = async (req: Request, res: Response) => {
-  try {
-    const { _id } = req.params; // grab `id` from URL
-    const user = await User.findById(_id);
 
-    if (!user) {
-      return res.status(404).json({ message: "Course not found" });
+
+export const getUserByEmail = async (req:Request, res:Response) => {
+  try {
+    const { email } = req.params; // assume email is sent as a route param
+
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Optionally fetch role-specific data
+    let roleData = null;
+    if (user.role === "student") {
+      roleData = await Student.findOne({ userId: user._id });
+    } else if (user.role === "teacher") {
+      roleData = await Teacher.findOne({ userId: user._id });
     }
 
-    res.status(200).json(user);
-  } catch (err: any) {
-    res.status(500).json({ message: err.message });
+    res.status(200).json({ user, roleData });
+  } catch (err) {
+    console.error("Get User Error:", err);
+    res.status(500).json({ message: "Server error", error: err });
   }
 };
+;
