@@ -1,20 +1,23 @@
 import axios from "axios";
 
-export const translateUsingAPI = async (text: string, targetLang: string): Promise<string> => {
-  const url = "https://translate.argosopentech.com/translate";
+export const translateText = async (text: string, targetLang: string) => {
+  try {
+    const response = await axios.post(
+      "https://translate.argosopentech.com/translate",
+      {
+        q: text,
+        source: "auto",
+        target: targetLang,
+        format: "text"
+      },
+      {
+        headers: { "Content-Type": "application/json" }
+      }
+    );
 
-  const response = await axios.post(
-    url,
-    {
-      q: text,
-      source: "auto", // Automatically detects language
-      target: targetLang,
-      format: "text"
-    },
-    {
-      headers: { "Content-Type": "application/json" }
-    }
-  );
-
-  return response.data.translatedText;
+    return response.data.translatedText;
+  } catch (err: any) {
+    console.error("Error:", err.message);
+    throw new Error("Translation failed");
+  }
 };
