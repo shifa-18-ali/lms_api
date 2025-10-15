@@ -8,7 +8,7 @@ router.get('/getUser',getUser)
 
 router.post("/register",register)
 router.post('/login',login)
-router.get("/user/:_id",  getUserByEmail);
+router.get("/user/:email",  getUserByEmail);
 
  // 🔑 use process.env.JWT_SECRET in real app
 
