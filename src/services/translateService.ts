@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const translateUsingAPI = async (text: string, targetLang: string): Promise<string> => {
-  const url = "https://api.mymemory.translated.net/get";
+  const url = "https://translate.argosopentech.com/translate";
 
   const response = await axios.post(
     url,
