@@ -8,7 +8,7 @@ import seed from './Routes/json.Routes'
 import MappingRoutes from './Routes/MappingRoutes'
 import teacherRoutes from './Routes/teacherRoutes'
 import studentRoutes from './Routes/studentRoutes'
-import translateRoutes from './Routes/translateRoutes'
+// import translateRoutes from './Routes/translateRoutes'
 const app:Application=express()
 import {connectDb} from './config/db'
 
@@ -23,7 +23,7 @@ app.use('',seed)
 app.use('',MappingRoutes)
 app.use('',teacherRoutes)
 app.use('',studentRoutes)
-app.use("/api/translate", translateRoutes);
+// app.use("/api/translate", translateRoutes);
 const port = process.env.PORT || 5000;
 app.listen(port,()=>{
     console.log(`server is running on port ${port}`)

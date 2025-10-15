@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { translateText } from "../controllers/translateController";
+// import { Router } from "express";
+// import { translateText } from "../controllers/translateController";
 
-const router = Router();
+// const router = Router();
 
-router.post("/", translateText);
+// router.post("/", translateText);
 
-export default router;
+// export default router;
