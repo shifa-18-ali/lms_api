@@ -50,7 +50,8 @@ profile_picture,
     const savedUser = await user.save();
 
     // Save in role-specific collection
-    if (role === "student") {
+try {
+   if (role === "student") {
 const student = new Student({ userId: savedUser._id, dob
  });
       await student.save();
@@ -68,6 +69,12 @@ profile_picture,});
       await teacher.save();
     }
 
+} catch (err) {
+  console.error("Role-specific save error:", err);
+      return res.status(400).json({ message: "Role-specific save failed", error: err })
+}
+
+   
     res.status(201).json({ message: "User registered successfully", user: savedUser });
   } catch (err) {
   console.error("Registration Error Details:", err); // 👈 this logs the exact error
