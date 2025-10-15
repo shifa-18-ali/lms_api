@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const translateUsingAPI = async (text: string, targetLang: string): Promise<string> => {
-  const url = "https://libretranslate.com/translate";
+  const url = "https://libretranslate.com/languages";
 
   const response = await axios.post(
     url,
