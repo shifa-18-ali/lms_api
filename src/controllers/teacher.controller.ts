@@ -39,17 +39,24 @@ export const getTeachers = async (req: Request, res: Response) => {
   }
 };
 
-// 🔍 Get a teacher by ID
-export const getTeacherById = async (req: Request, res: Response) => {
+
+
+export const getTeacherByEmail = async (req: Request, res: Response) => {
   try {
-    const {email}=req.params
-      const user = await User.findOne({ email, role: "teacher" })
-    if (!user) return res.status(404).json({ message: "Teacher not found" });
-    res.status(200).json(user);
+    const { email } = req.params; // take email from URL param
+
+    const teacher = await Teacher.findOne({ email });
+
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+
+    res.status(200).json(teacher);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching teacher", error });
+    res.status(500).json({ message: "Server error", error: error});
   }
 };
+;
 
 // ✏️ Update teacher
 export const updateTeacher = async (req: Request, res: Response) => {
