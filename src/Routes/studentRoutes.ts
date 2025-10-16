@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 router.get("/getStudents", getStudents);
-router.get("/getStudentByEmail/:id", getStudentByEmail);
+router.get("/getStudentByEmail/:email", getStudentByEmail);
 router.put("/upStudent/:id", updateStudent);
 router.delete("/delStudent/:id", deleteStudent);
 
