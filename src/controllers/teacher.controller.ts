@@ -43,9 +43,9 @@ export const getTeachers = async (req: Request, res: Response) => {
 export const getTeacherById = async (req: Request, res: Response) => {
   try {
     const {email}=req.params
-   const teacher = await User.findOne({ email: req.params.email, role: "teacher" }).populate("profileId");
-    if (!teacher) return res.status(404).json({ message: "Teacher not found" });
-    res.status(200).json(teacher);
+      const user = await User.findOne({ email, role: "teacher" })
+    if (!user) return res.status(404).json({ message: "Teacher not found" });
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: "Error fetching teacher", error });
   }
