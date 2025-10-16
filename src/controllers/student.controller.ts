@@ -31,16 +31,25 @@ export const getStudents = async (req: Request, res: Response) => {
   }
 };
 
-// 🔍 Get student by ID
-export const getStudentById = async (req: Request, res: Response) => {
+
+
+
+export const getStudentByEmail = async (req: Request, res: Response) => {
   try {
-  const student = await User.findOne({ _id: req.params.id, role: "student" }).populate("profileId");
-    if (!student) return res.status(404).json({ message: "Student not found" });
+    const { email } = req.params; // take email from URL param
+
+    const student = await Student.findOne({ email });
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
     res.status(200).json(student);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching student", error });
+    res.status(500).json({ message: "Server error", error: error});
   }
 };
+;
 
 // ✏️ Update student info
 export const updateStudent = async (req: Request, res: Response) => {
