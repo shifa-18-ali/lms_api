@@ -42,7 +42,8 @@ export const getTeachers = async (req: Request, res: Response) => {
 // 🔍 Get a teacher by ID
 export const getTeacherById = async (req: Request, res: Response) => {
   try {
-   const teacher = await User.findOne({ _id: req.params.id, role: "teacher" }).populate("profileId");
+    const {email}=req.params
+   const teacher = await User.findOne({ email: req.params.email, role: "teacher" }).populate("profileId");
     if (!teacher) return res.status(404).json({ message: "Teacher not found" });
     res.status(200).json(teacher);
   } catch (error) {

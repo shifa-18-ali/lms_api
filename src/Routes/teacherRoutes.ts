@@ -11,7 +11,7 @@ const router = express.Router();
 
 
 router.get("/getTeacher", getTeachers);
-router.get("/getTeacherbyid/:id", getTeacherById);
+router.get("/getTeacherbyid/:email", getTeacherById);
 router.put("/upTeacher/:id", updateTeacher);
 router.delete("/delTeacher/:id", deleteTeacher);
 
