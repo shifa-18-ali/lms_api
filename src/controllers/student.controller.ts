@@ -34,21 +34,43 @@ export const getStudents = async (req: Request, res: Response) => {
 
 
 
+
+
 export const getStudentByEmail = async (req: Request, res: Response) => {
   try {
-    const { email } = req.params; // take email from URL param
+    const { email } = req.params;
 
-    const student = await Student.findOne({ email });
-
-    if (!student) {
-      return res.status(404).json({ message: "Student not found" });
+    // Find the user first
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found with this email" });
     }
 
-    res.status(200).json(student);
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error});
+    // Find the student details linked with this user
+    const student = await Student.findOne({ userId: user._id }).populate("userId");
+
+    if (!student) {
+      return res.status(404).json({ message: "Student profile not found for this user" });
+    }
+
+    // Combine both user and student details in a single response
+    const fullDetails = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      dob: student.dob,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+
+    res.status(200).json(fullDetails);
+  } catch (err) {
+    console.error("Error fetching student details:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
+
 ;
 
 // ✏️ Update student info
