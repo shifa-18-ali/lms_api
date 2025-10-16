@@ -41,21 +41,47 @@ export const getTeachers = async (req: Request, res: Response) => {
 
 
 
+
 export const getTeacherByEmail = async (req: Request, res: Response) => {
   try {
-    const { email } = req.params; // take email from URL param
+    const { email } = req.params; // email from URL param
 
-    const teacher = await Teacher.findOne({ email });
-
-    if (!teacher) {
+    // Find user with role = "teacher" and given email
+    const user = await User.findOne({ email, role: "teacher" });
+    if (!user) {
       return res.status(404).json({ message: "Teacher not found" });
     }
 
-    res.status(200).json(teacher);
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error});
+    // Find teacher details using userId reference
+    const teacher = await Teacher.findOne({ userId: user._id });
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher profile not found" });
+    }
+
+    // Combine data for response
+    const teacherData = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      experience: teacher.experience,
+      dob: teacher.dob,
+      phoneNo: teacher.phoneNo,
+      address: teacher.address,
+      bio: teacher.bio,
+      qualification: teacher.qualification,
+      specialization: teacher.specialization,
+      assigned_courses: teacher.assigned_courses,
+      profile_picture: teacher.profile_picture
+    };
+
+    res.status(200).json({ teacher: teacherData });
+  } catch (err) {
+    console.error("Error fetching teacher by email:", err);
+    res.status(500).json({ message: "Server error", error: err});
   }
 };
+;
 ;
 
 // ✏️ Update teacher
