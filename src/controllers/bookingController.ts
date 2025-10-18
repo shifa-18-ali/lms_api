@@ -84,58 +84,8 @@ export const getBookingDetails = async (req:Request, res:Response) => {
       },
       { $unwind: "$courseInfo" },
 
-      // 3️⃣ Calculate total duration in minutes
-      {
-        $addFields: {
-          totalDurationMinutes: {
-            $sum: {
-              $map: {
-                input: "$courseInfo.modules",
-                as: "module",
-                in: {
-                  $let: {
-                    vars: {
-                      hours: {
-                        $toInt: {
-                          $ifNull: [
-                            {
-                              $arrayElemAt: [
-                                {
-                                  $regexFind: { input: "$$module.duration", regex: "(\\d+)h" }
-                                },
-                                "match"
-                              ]
-                            },
-                            0
-                          ]
-                        }
-                      },
-                      minutes: {
-                        $toInt: {
-                          $ifNull: [
-                            {
-                              $arrayElemAt: [
-                                {
-                                  $regexFind: { input: "$$module.duration", regex: "(\\d+)m" }
-                                },
-                                "match"
-                              ]
-                            },
-                            0
-                          ]
-                        }
-                      }
-                    },
-                    in: { $add: [{ $multiply: ["$$hours", 60] }, "$$minutes"] }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
+ 
 
-      // 4️⃣ Convert minutes to human-readable hours and minutes
       {
         $addFields: {
           totalDurationFormatted: {
