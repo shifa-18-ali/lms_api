@@ -86,6 +86,13 @@ export const getBookingDetails = async (req:Request, res:Response) => {
         }
       },
       { $unwind: "$courseInfo" },
+        {
+        $addFields: {
+          totalCourseDuration: {
+            $sum: "$courseInfo.modules.duration"
+          }
+        }
+      },
 
       // 4️⃣ Project only the fields we want
       {
