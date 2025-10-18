@@ -93,7 +93,7 @@ export const getBookingDetails = async (req:Request, res:Response) => {
           _id: 0,
           studentName: "$userInfo.name",
           courseId: "$courseInfo._id",
-          courseTitle: "$courseInfo.courseTitle",
+          courseTitle: "$courseInfo.title",
           courseDuration: "$courseInfo.duration",
           bookingDate: 1,
           bookingTime: 1
@@ -108,7 +108,7 @@ export const getBookingDetails = async (req:Request, res:Response) => {
     res.status(200).json(bookings);
   } catch (err) {
     console.error("Error fetching booking details:", err);
-    res.status(500).json({ message: "Server error", error: err});
+    res.status(500).json({ message: "Server error", error: err });
   }
 };
 
