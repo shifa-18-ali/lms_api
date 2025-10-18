@@ -101,7 +101,7 @@ export const getBookingDetails = async (req:Request, res:Response) => {
           studentName: "$userInfo.name",
           courseId: "$courseInfo._id",
           courseTitle: "$courseInfo.title",
-          courseDuration: "$courseInfo.duration.[modules.duration]",
+          totalCourseDuration:1,
           bookingDate: 1,
           bookingTime: 1
         }
