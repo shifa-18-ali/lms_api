@@ -86,10 +86,28 @@ export const getBookingDetails = async (req:Request, res:Response) => {
         }
       },
       { $unwind: "$courseInfo" },
-        {
+      {
         $addFields: {
           totalCourseDuration: {
-            $sum: "$courseInfo.modules.duration"
+            $sum: {
+              $map: {
+                input: "$courseInfo.modules",
+                as: "module",
+                in: {
+                  $toInt: {
+                    $arrayElemAt: [
+                      {
+                        $regexFind: {
+                          input: "$$module.duration",
+                          regex: "\\d+"
+                        }
+                      },
+                      "match"
+                    ]
+                  }
+                }
+              }
+            }
           }
         }
       },
