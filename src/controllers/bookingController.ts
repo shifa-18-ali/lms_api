@@ -58,25 +58,22 @@ export const createBooking = async (req:Request, res:Response) => {
 
 
 
-
 export const getBookingDetails = async (req:Request, res:Response) => {
   try {
     const bookings = await Booking.aggregate([
-      // 1️⃣ Join Booking → User
+      // 1️⃣ Join with User collection to get student name
       {
         $lookup: {
           from: "users",
           localField: "userEmail",
           foreignField: "email",
-          as: "userInfo"
+          as: "studentInfo"
         }
       },
-      { $unwind: "$userInfo" },
+      { $unwind: "$studentInfo" },
+      { $match: { "studentInfo.role": "student" } },
 
-      // 2️⃣ Match only students
-      { $match: { "userInfo.role": "student" } },
-
-      // 3️⃣ Join Booking → Course
+      // 2️⃣ Join with Course collection
       {
         $lookup: {
           from: "courses",
@@ -87,25 +84,49 @@ export const getBookingDetails = async (req:Request, res:Response) => {
       },
       { $unwind: "$courseInfo" },
 
-      // 4️⃣ Extract numeric value from each string duration and sum them
+      // 3️⃣ Calculate total duration in minutes
       {
         $addFields: {
-          totalCourseDuration: {
+          totalDurationMinutes: {
             $sum: {
               $map: {
                 input: "$courseInfo.modules",
                 as: "module",
                 in: {
-                  $toInt: {
-                    $arrayElemAt: [
-                      {
-                        $regexFind: {
-                          input: "$$module.duration",
-                          regex: "\\d+" // extract only numbers from string
+                  $let: {
+                    vars: {
+                      hours: {
+                        $toInt: {
+                          $ifNull: [
+                            {
+                              $arrayElemAt: [
+                                {
+                                  $regexFind: { input: "$$module.duration", regex: "(\\d+)h" }
+                                },
+                                "match"
+                              ]
+                            },
+                            0
+                          ]
                         }
                       },
-                      "match"
-                    ]
+                      minutes: {
+                        $toInt: {
+                          $ifNull: [
+                            {
+                              $arrayElemAt: [
+                                {
+                                  $regexFind: { input: "$$module.duration", regex: "(\\d+)m" }
+                                },
+                                "match"
+                              ]
+                            },
+                            0
+                          ]
+                        }
+                      }
+                    },
+                    in: { $add: [{ $multiply: ["$$hours", 60] }, "$$minutes"] }
                   }
                 }
               }
@@ -114,16 +135,30 @@ export const getBookingDetails = async (req:Request, res:Response) => {
         }
       },
 
-      // 5️⃣ Project final result
+      // 4️⃣ Convert minutes to human-readable hours and minutes
+      {
+        $addFields: {
+          totalDurationFormatted: {
+            $concat: [
+              { $toString: { $floor: { $divide: ["$totalDurationMinutes", 60] } } },
+              "h ",
+              { $toString: { $mod: ["$totalDurationMinutes", 60] } },
+              "m"
+            ]
+          }
+        }
+      },
+
+      // 5️⃣ Final Projection
       {
         $project: {
           _id: 0,
-          studentName: "$userInfo.name",
-          studentEmail: "$userInfo.email",
+          studentName: "$studentInfo.name",
+          studentEmail: "$studentInfo.email",
           courseId: "$courseInfo._id",
-          courseTitle: "$courseInfo.title",
+          courseTitle: "$courseInfo.courseTitle",
           courseDescription: "$courseInfo.description",
-          totalCourseDuration: 1,
+          totalDurationFormatted: 1,
           bookingDate: 1,
           bookingTime: 1
         }
@@ -131,15 +166,16 @@ export const getBookingDetails = async (req:Request, res:Response) => {
     ]);
 
     if (!bookings.length) {
-      return res.status(404).json({ message: "No bookings found" });
+      return res.status(404).json({ message: "No student bookings found" });
     }
 
     res.status(200).json(bookings);
   } catch (err) {
-    console.error("Error fetching booking details:", err);
+    console.error("Error fetching student booking details:", err);
     res.status(500).json({ message: "Server error", error: err });
   }
 };
+;
 
 
 
