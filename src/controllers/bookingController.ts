@@ -57,26 +57,26 @@ export const createBooking = async (req:Request, res:Response) => {
 
 
 
+
+
 export const getBookingDetails = async (req:Request, res:Response) => {
   try {
     const bookings = await Booking.aggregate([
-      // 1️⃣ Join Booking → User to get student info
+      // 1️⃣ Join Booking → User
       {
         $lookup: {
           from: "users",
-          localField: "userEmail", // Booking stores student email
-          foreignField: "email",   // User email
+          localField: "userEmail",
+          foreignField: "email",
           as: "userInfo"
         }
       },
       { $unwind: "$userInfo" },
 
-      // 2️⃣ Only select students (optional)
-      {
-        $match: { "userInfo.role": "student" }
-      },
+      // 2️⃣ Match only students
+      { $match: { "userInfo.role": "student" } },
 
-      // 3️⃣ Join Booking → Course to get course info
+      // 3️⃣ Join Booking → Course
       {
         $lookup: {
           from: "courses",
@@ -86,6 +86,8 @@ export const getBookingDetails = async (req:Request, res:Response) => {
         }
       },
       { $unwind: "$courseInfo" },
+
+      // 4️⃣ Extract numeric value from each string duration and sum them
       {
         $addFields: {
           totalCourseDuration: {
@@ -99,7 +101,7 @@ export const getBookingDetails = async (req:Request, res:Response) => {
                       {
                         $regexFind: {
                           input: "$$module.duration",
-                          regex: "\\d+"
+                          regex: "\\d+" // extract only numbers from string
                         }
                       },
                       "match"
@@ -112,14 +114,15 @@ export const getBookingDetails = async (req:Request, res:Response) => {
         }
       },
 
-      // 4️⃣ Project only the fields we want
+      // 5️⃣ Project final result
       {
         $project: {
           _id: 0,
           studentName: "$userInfo.name",
+          studentEmail: "$userInfo.email",
           courseId: "$courseInfo._id",
           courseTitle: "$courseInfo.title",
-             modules: "$courseInfo.modules",
+          courseDescription: "$courseInfo.description",
           totalCourseDuration: 1,
           bookingDate: 1,
           bookingTime: 1
@@ -137,6 +140,7 @@ export const getBookingDetails = async (req:Request, res:Response) => {
     res.status(500).json({ message: "Server error", error: err });
   }
 };
+
 
 
 export const getBookingsByEmail = async (req:Request, res:Response) => {
