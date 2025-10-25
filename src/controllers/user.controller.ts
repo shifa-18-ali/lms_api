@@ -43,10 +43,10 @@ profile_picture,
     if (existingUser) return res.status(400).json({ message: "User already exists" });
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
-    const user = new User({ name, email, password: hashedPassword, role });
+    const user = new User({ name, email, password, role }); //for hased password - password:hashedPassword
     const savedUser = await user.save();
 
     // Save in role-specific collection
