@@ -105,23 +105,23 @@ export const login = async (req: Request, res: Response) => {
     if (!user)
       return res.status(400).json({ message: "Invalid email or password" });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid email or password" });
-    if (!secretKey) {
-      return res.status(500).json({ message: "JWT_SECRET not defined" });
-    } else {
-      const token = jwt.sign({ id: user._id, role: user.role }, secretKey, {
-        expiresIn: "1h",
-      });
+    // const isMatch = await bcrypt.compare(password, user.password);
+    // if (!isMatch)
+    //   return res.status(400).json({ message: "Invalid email or password" });
+    // if (!secretKey) {
+    //   return res.status(500).json({ message: "JWT_SECRET not defined" });
+    // } else {
+    //   const token = jwt.sign({ id: user._id, role: user.role }, secretKey, {
+    //     expiresIn: "1h",
+    //   });
 
       res.json({
         message: "Login successful",
-        token,
+        // token,
         user
       });
     }
-  } catch (err: any) {
+   catch (err: any) {
     res.status(500).json({ message: err.message });
   }
 };
