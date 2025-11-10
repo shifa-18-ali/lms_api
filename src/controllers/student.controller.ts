@@ -77,7 +77,7 @@ export const getStudentByEmail = async (req: Request, res: Response) => {
 export const updateStudent = async (req: Request, res: Response) => {
   try {
     const updatedStudent = await Student.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+      new: true, runValidators: true 
     });
     if (!updatedStudent) return res.status(404).json({ message: "Student not found" });
     res.status(200).json(updatedStudent);
