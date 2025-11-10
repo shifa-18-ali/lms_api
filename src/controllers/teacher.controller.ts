@@ -89,6 +89,7 @@ export const updateTeacher = async (req: Request, res: Response) => {
   try {
     const updatedTeacher = await Teacher.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updatedTeacher) return res.status(404).json({ message: "Teacher not found" });
+    else
     res.status(200).json(updatedTeacher);
   } catch (error) {
     res.status(500).json({ message: "Error updating teacher", error });
