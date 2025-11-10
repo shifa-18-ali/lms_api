@@ -73,18 +73,26 @@ export const getStudentByEmail = async (req: Request, res: Response) => {
 
 ;
 
-// ✏️ Update student info
+
+
 export const updateStudent = async (req: Request, res: Response) => {
   try {
-    const updatedStudent = await Student.findByIdAndUpdate(req.params.id, req.body, {
-      new: true, runValidators: true 
-    });
-    if (!updatedStudent) return res.status(404).json({ message: "Student not found" });
+    const updatedStudent = await Student.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedStudent) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
     res.status(200).json(updatedStudent);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating student", error });
+  } catch (error: any) {
+    res.status(500).json({ message: "Error updating student", error: error.message });
   }
 };
+
 
 // 🗑️ Delete student
 export const deleteStudent = async (req: Request, res: Response) => {
