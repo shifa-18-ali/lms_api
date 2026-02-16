@@ -2,11 +2,7 @@ import mongoose from "mongoose";
 
 const BookingSchema = new mongoose.Schema(
   {
-    profileId: {
-      type: String,
-      required: true,
-      ref: "User"
-    },
+      profileId: { type: mongoose.Schema.Types.ObjectId, refPath: "role" } ,
 
 
     courseId: {
