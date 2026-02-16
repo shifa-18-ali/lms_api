@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 
 const BookingSchema = new mongoose.Schema(
   {
-      profileId: { type: mongoose.Schema.Types.ObjectId, refPath: "role" } ,
-
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 
     courseId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -11,11 +10,10 @@ const BookingSchema = new mongoose.Schema(
       required: true
     },
 
-     createdAt: {
-    type: Date,
-    default: Date.now
-  },
- 
+    slotDateTime: {
+      type: Date,
+      required: true
+    },
 
     role: { type: String, enum: ["student", "teacher"], required: true },
   },
