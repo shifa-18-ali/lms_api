@@ -8,10 +8,10 @@ import { Request,Response } from "express";
 
 export const createBooking = async (req:Request, res:Response) => {
   try {
-    const { userEmail, courseId, bookingDate, bookingTime, status } = req.body;
+    const { profileId, courseId, createdAt, role } = req.body;
 
     // 1️⃣ Check if user exists
-    const user = await User.findOne({ email: userEmail });
+    const user = await User.findOne({  profileId });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -23,7 +23,7 @@ export const createBooking = async (req:Request, res:Response) => {
 
     // 3️⃣ Check for duplicate booking (same student + same course)
     const existingBooking = await Booking.findOne({
-      userEmail,
+      profileId,
       courseId
     });
 
@@ -36,11 +36,7 @@ export const createBooking = async (req:Request, res:Response) => {
     // 4️⃣ Create new booking
     const newBooking = new Booking({
     
-      userEmail,
-      courseId,
-      bookingDate,
-      bookingTime,
-      status: status || "pending"
+     profileId, courseId, createdAt, role
     });
 
     const savedBooking = await newBooking.save();
