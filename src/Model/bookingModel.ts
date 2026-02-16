@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const BookingSchema = new mongoose.Schema(
   {
-    userEmail: {
+    profileId: {
       type: String,
       required: true,
       ref: "User"
@@ -15,20 +15,13 @@ const BookingSchema = new mongoose.Schema(
       required: true
     },
 
-    bookingDate: {
-      type: Date,
-      required: true
-    },
-    bookingTime: {
-      type: String,
-      required: true
-    },
+     createdAt: {
+    type: Date,
+    default: Date.now
+  },
+ 
 
-    status: {
-      type: String,
-      enum: ["pending", "confirmed", "cancelled"],
-      default: "pending"
-    }
+    role: { type: String, enum: ["student", "teacher"], required: true },
   },
   { timestamps: true }
 );
