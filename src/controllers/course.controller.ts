@@ -58,6 +58,20 @@ export const getCourseById = async (req: Request, res: Response) => {
     res.status(500).json({ message: err.message });
   }
 }
+export const getCourseName = async (req: Request, res: Response) => {
+  try {
+     // grab `id` from URL
+    const course = await Course.find().select("_id courseTitle");;
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    res.status(200).json(course);
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+}
 
 
 

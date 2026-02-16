@@ -27,6 +27,7 @@ app.use('',teacherRoutes)
 app.use('',studentRoutes)
 app.use('',bookingRoutes)
 app.use('',studentActivityRoutes)
+
 // app.use("/api/translate", translateRoutes);
 const port = process.env.PORT || 5000;
 app.listen(port,()=>{

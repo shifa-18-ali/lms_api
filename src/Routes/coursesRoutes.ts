@@ -2,7 +2,7 @@
 import express from "express";
 import {authenticate,authorize} from '../middlewares/auth.middleware'
 const router = express.Router();
-import { getCourse,createCourse,getCourseById}  from "../controllers/course.controller";
+import { getCourse,createCourse,getCourseById,getCourseName}  from "../controllers/course.controller";
  
 
 // router.get('/getCourse',authenticate,getCourse);
@@ -16,6 +16,7 @@ router.post("/createCourse", createCourse);
 // router.get('/getCourseById/:_id',authenticate,getCourseById)
 router.get('/getCourseById/:_id',getCourseById)
 
+router.get('/getCourseName',getCourseName)
 
 
 
