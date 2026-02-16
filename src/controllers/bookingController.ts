@@ -11,7 +11,7 @@ export const createBooking = async (req:Request, res:Response) => {
     const { profileId, courseId, createdAt, role } = req.body;
 
     // 1️⃣ Check if user exists
-    const user = await User.findOne({  profileId });
+    const user = await User.findOne({ _id: profileId });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
