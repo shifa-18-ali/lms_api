@@ -9,7 +9,11 @@ const BookingSchema = new mongoose.Schema(
       ref: "Course",
       required: true
     },
-
+duration: {
+  type: Number,
+  required: true
+}
+,
     slotDateTime: {
       type: Date,
       required: true

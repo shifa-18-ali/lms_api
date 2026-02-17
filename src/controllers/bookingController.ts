@@ -59,7 +59,7 @@ export const getBookingList = async (req: Request, res: Response) => {
 
     const bookings = await Booking.find()
       .populate({
-        path: "profileId",
+        path: "userId",
         select: "_id name "
       })
       .populate({
