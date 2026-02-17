@@ -53,21 +53,46 @@ userId, courseId, slotDateTime, role
 
 
 
+
 export const getBookingList = async (req: Request, res: Response) => {
   try {
 
     const bookings = await Booking.find()
-      .populate("profileId", "name")      // get student name
-      .populate("courseId", "courseTitle"); // get course name
+      .populate({
+        path: "profileId",
+        select: "_id name email"
+      })
+      .populate({
+        path: "courseId",
+        select: "_id courseTitle"
+      })
+      .select("slotDateTime duration profileId courseId createdAt")
+      .sort({ slotDateTime: -1 });
 
-    res.status(200).json(bookings);
+    const formattedData = bookings.map((booking: any) => ({
+      userLoginId: booking.profileId?._id,
+      studentName: booking.profileId?.name,
+      courseId: booking.courseId?._id,
+      courseName: booking.courseId?.courseTitle,
+      bookingDateTime: booking.slotDateTime,
+      duration: booking.duration
+    }));
+
+    res.status(200).json({
+      success: true,
+      count: formattedData.length,
+      data: formattedData
+    });
 
   } catch (error) {
+    console.error("Error fetching booking list:", error);
     res.status(500).json({
-      message: "Error fetching bookings"
+      success: false,
+      message: "Server error"
     });
   }
 };
+
 
 
 
