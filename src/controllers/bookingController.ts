@@ -52,60 +52,23 @@ userId, courseId, slotDateTime, role
 
 
 
-export const getBookingDetails = async (req:Request, res:Response) => {
+
+export const getBookingList = async (req: Request, res: Response) => {
   try {
-    const bookings = await Booking.aggregate([
-      // 1️⃣ Join Booking → User to get student info
-      {
-        $lookup: {
-          from: "users",
-          localField: "userEmail", // Booking stores student email
-          foreignField: "email",   // User email
-          as: "userInfo"
-        }
-      },
-      { $unwind: "$userInfo" },
 
-      // 2️⃣ Only select students (optional)
-      {
-        $match: { "userInfo.role": "student" }
-      },
-
-      // 3️⃣ Join Booking → Course to get course info
-      {
-        $lookup: {
-          from: "courses",
-          localField: "courseId",
-          foreignField: "_id",
-          as: "courseInfo"
-        }
-      },
-      { $unwind: "$courseInfo" },
-
-      // 4️⃣ Project only the fields we want
-      {
-        $project: {
-          _id: 0,
-          studentName: "$userInfo.name",
-          courseId: "$courseInfo._id",
-          courseTitle: "$courseInfo.title",
-          courseDuration: "$courseInfo.duration",
-          bookingDate: 1,
-          bookingTime: 1
-        }
-      }
-    ]);
-
-    if (!bookings.length) {
-      return res.status(404).json({ message: "No bookings found" });
-    }
+    const bookings = await Booking.find()
+      .populate("profileId", "name")      // get student name
+      .populate("courseId", "courseTitle"); // get course name
 
     res.status(200).json(bookings);
-  } catch (err) {
-    console.error("Error fetching booking details:", err);
-    res.status(500).json({ message: "Server error", error: err });
+
+  } catch (error) {
+    res.status(500).json({
+      message: "Error fetching bookings"
+    });
   }
 };
+
 
 
 export const getBookingsByEmail = async (req:Request, res:Response) => {
