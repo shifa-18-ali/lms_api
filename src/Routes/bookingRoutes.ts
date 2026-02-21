@@ -8,7 +8,7 @@ import {
 const router = express.Router();
 
 router.post("/createBooking", createBooking);
-router.get("/getBookingList", getBookingList);
+router.get("/getBookingList/:userId", getBookingList);
 router.get("/getBookinguser/:email", getBookingsByEmail);
 
 export default router;

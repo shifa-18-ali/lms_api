@@ -56,8 +56,9 @@ userId, courseId, slotDateTime, role
 
 export const getBookingList = async (req: Request, res: Response) => {
   try {
-
-    const bookings = await Booking.find()
+const { userId } = req.params;
+    const bookings = await Booking.find({ userId: userId })
+    
       .populate({
         path: "userId",
         select: "_id name "
@@ -77,12 +78,16 @@ export const getBookingList = async (req: Request, res: Response) => {
       bookingDateTime: booking.slotDateTime,
       duration: booking.duration
     }));
-
-    res.status(200).json({
+if (!bookings.length) {
+      return res.status(404).json({ message: "No bookings found for this user" });
+    }else{
+       res.status(200).json({
       success: true,
       count: formattedData.length,
       data: formattedData
-    });
+    })
+    }
+   ;
 
   } catch (error) {
     console.error("Error fetching booking list:", error);
