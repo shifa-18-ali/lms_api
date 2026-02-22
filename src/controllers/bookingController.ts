@@ -56,35 +56,34 @@ userId, courseId, slotDateTime, role
 
 export const getBookingList = async (req: Request, res: Response) => {
   try {
-const {userId } = req.params;
+    const { userId } = req.params;
+
     const bookings = await Booking.find({ userId })
-     .populate({
+      .populate({
         path: "userId",
-        select: "_id name "
+        select: "_id name"
       })
       .populate({
         path: "courseId",
         select: "_id courseTitle"
       })
-      .select("slotDateTime duration userId profileId courseId createdAt")
+      .select("slotDateTime duration userId courseId createdAt")
       .sort({ slotDateTime: -1 });
 
     const formattedData = bookings.map((booking: any) => ({
-      userLoginId: booking.profileId?._id,
-      studentName: booking.profileId?.name,
+      userLoginId: booking.userId?._id,
+      studentName: booking.userId?.name,
       courseId: booking.courseId?._id,
       courseName: booking.courseId?.courseTitle,
       bookingDateTime: booking.slotDateTime,
       duration: booking.duration
     }));
 
-       res.status(200).json({
+    res.status(200).json({
       success: true,
       count: formattedData.length,
       data: formattedData
-    })
-    
-   ;
+    });
 
   } catch (error) {
     console.error("Error fetching booking list:", error);
@@ -94,7 +93,6 @@ const {userId } = req.params;
     });
   }
 };
-
 
 
 
