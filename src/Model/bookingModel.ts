@@ -11,7 +11,7 @@ const BookingSchema = new mongoose.Schema(
     },
 duration: {
   type: Number,
-  required: true
+  
 }
 ,
     slotDateTime: {
