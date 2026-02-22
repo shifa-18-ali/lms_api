@@ -79,13 +79,13 @@ const {userId } = req.params;
     }));
 if (!bookings.length) {
       return res.status(404).json({ message: "No bookings found for this user" });
-    }else{
+    }
        res.status(200).json({
       success: true,
       count: formattedData.length,
       data: formattedData
     })
-    }
+    
    ;
 
   } catch (error) {
