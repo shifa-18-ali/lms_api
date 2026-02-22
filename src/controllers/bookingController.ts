@@ -58,19 +58,28 @@ export const getBookingList = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
 
-    const bookings = await Booking.find({ userId })
-      .populate({
-        path: "userId",
-        select: "_id name"
-      })
-      .populate({
-        path: "courseId",
-        select: "_id courseTitle"
-      })
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required"
+      });
+    }
+
+    const bookings = await Booking.find({ userId }) // string is fine
+      .populate("userId", "_id name")
+      .populate("courseId", "_id courseTitle")
       .select("slotDateTime duration userId courseId createdAt")
       .sort({ slotDateTime: -1 });
 
+    if (!bookings.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No bookings found"
+      });
+    }
+
     const formattedData = bookings.map((booking: any) => ({
+      bookingId: booking._id,
       userLoginId: booking.userId?._id,
       studentName: booking.userId?.name,
       courseId: booking.courseId?._id,
@@ -79,7 +88,7 @@ export const getBookingList = async (req: Request, res: Response) => {
       duration: booking.duration
     }));
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       count: formattedData.length,
       data: formattedData
@@ -87,9 +96,9 @@ export const getBookingList = async (req: Request, res: Response) => {
 
   } catch (error) {
     console.error("Error fetching booking list:", error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "Internal Server Error"
     });
   }
 };
