@@ -57,7 +57,7 @@ userId, courseId, slotDateTime, role
 export const getBookingList = async (req: Request, res: Response) => {
   try {
 const {userId } = req.params;
-    const bookings = await Booking.find({ userId: userId })
+    const bookings = await Booking.find({ userId })
      .populate({
         path: "userId",
         select: "_id name "
