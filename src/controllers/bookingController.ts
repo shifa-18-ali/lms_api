@@ -77,9 +77,7 @@ const {userId } = req.params;
       bookingDateTime: booking.slotDateTime,
       duration: booking.duration
     }));
-if (!bookings.length) {
-      return res.status(404).json({ message: "No bookings found for this user" });
-    }
+
        res.status(200).json({
       success: true,
       count: formattedData.length,
