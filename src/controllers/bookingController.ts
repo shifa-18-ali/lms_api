@@ -66,7 +66,7 @@ const {userId } = req.params;
         path: "courseId",
         select: "_id courseTitle"
       })
-      .select("slotDateTime duration profileId courseId createdAt")
+      .select("slotDateTime duration userId profileId courseId createdAt")
       .sort({ slotDateTime: -1 });
 
     const formattedData = bookings.map((booking: any) => ({
