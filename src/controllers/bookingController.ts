@@ -1,7 +1,7 @@
 import Booking from "../Model/bookingModel";
 import User from "../Model/userModel"
 import express from "express";
-const Activity = require("../models/Activity");
+const Activity = require("../Model/activityModel");
 import {
   startSession,
   completeSession,

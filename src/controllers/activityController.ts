@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-const Activity = require("../models/Activity");
+const Activity = require("../Model/activityModel");
 
 
 // START SESSION
