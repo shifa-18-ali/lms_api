@@ -10,6 +10,7 @@ import teacherRoutes from './Routes/teacherRoutes'
 import studentRoutes from './Routes/studentRoutes'
 import bookingRoutes from './Routes/bookingRoutes'
 import studentActivityRoutes from './Routes/studentsActivityRoutes'
+import activityRoutes from './Routes/activityRoutes'
 // import translateRoutes from './Routes/translateRoutes'
 const app:Application=express()
 import {connectDb} from './config/db'
@@ -27,6 +28,7 @@ app.use('',teacherRoutes)
 app.use('',studentRoutes)
 app.use('',bookingRoutes)
 app.use('',studentActivityRoutes)
+app.use('',activityRoutes)
 
 // app.use("/api/translate", translateRoutes);
 const port = process.env.PORT || 5000;

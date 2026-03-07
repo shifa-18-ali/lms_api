@@ -1,27 +1,31 @@
 import Booking from "../Model/bookingModel";
 import User from "../Model/userModel"
+const Activity = require("../models/Activity");
 import { Request,Response } from "express";
 
 
 
 
 
-export const createBooking = async (req:Request, res:Response) => {
+export const createBooking = async (req: Request, res: Response) => {
   try {
     const { userId, courseId, slotDateTime, role } = req.body;
 
     // 1️⃣ Check if user exists
-    const user = await User.findOne({_id: userId });
+    const user = await User.findOne({ _id: userId });
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // 2️⃣ Allow only students to make bookings
+    // 2️⃣ Allow only students
     if (user.role !== "student") {
-      return res.status(403).json({ message: "Only students can book courses." });
+      return res.status(403).json({
+        message: "Only students can book courses."
+      });
     }
 
-    // 3️⃣ Check for duplicate booking (same student + same course)
+    // 3️⃣ Check duplicate booking
     const existingBooking = await Booking.findOne({
       userId,
       courseId
@@ -33,20 +37,36 @@ export const createBooking = async (req:Request, res:Response) => {
       });
     }
 
-    // 4️⃣ Create new booking
+    // 4️⃣ Create booking
     const newBooking = new Booking({
-userId, courseId, slotDateTime, role
+      userId,
+      courseId,
+      slotDateTime,
+      role
     });
 
     const savedBooking = await newBooking.save();
+
+    // 5️⃣ Create activity entry
+    await Activity.create({
+      studentId: userId,
+      bookingId: savedBooking._id,
+      courseId: courseId,
+      status: "started"
+    });
 
     res.status(201).json({
       message: "Booking created successfully",
       booking: savedBooking
     });
+
   } catch (err) {
     console.error("Error creating booking:", err);
-    res.status(500).json({ message: "Server error", error: err });
+
+    res.status(500).json({
+      message: "Server error",
+      error: err
+    });
   }
 };
 
