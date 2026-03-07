@@ -1,6 +1,25 @@
 import Booking from "../Model/bookingModel";
 import User from "../Model/userModel"
+import express from "express";
 const Activity = require("../models/Activity");
+import {
+  startSession,
+  completeSession,
+  getActivityHistory,
+  adminDashboard
+} from "../controllers/activityController";
+
+const router = express.Router();
+
+router.put("/startSession/:bookingId", startSession);
+
+router.put("/completeSession/:bookingId", completeSession);
+
+router.get("/getActivityHistory/:studentId", getActivityHistory);
+
+router.get("/adminDashboard", adminDashboard);
+
+export default router;
 import { Request,Response } from "express";
 
 
