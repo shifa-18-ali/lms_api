@@ -1,8 +1,8 @@
 import express from "express";
 import {
   updateSessionStatus,
-  // getActivityHistory,
-  // adminDashboard
+  getActivityHistory,
+  adminDashboard
 } from "../controllers/activityController";
 
 const router = express.Router();
@@ -12,14 +12,14 @@ router.put(
   updateSessionStatus
 );
 
-// router.get(
-//   "/getActivityHistory/:studentId",
-//   getActivityHistory
-// );
+router.get(
+  "/getActivityHistory/:studentId",
+  getActivityHistory
+);
 
-// router.get(
-//   "/adminDashboard",
-//   adminDashboard
-// );
+router.get(
+  "/adminDashboard",
+  adminDashboard
+);
 
 export default router;
