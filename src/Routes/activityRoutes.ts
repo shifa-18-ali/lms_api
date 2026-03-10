@@ -18,7 +18,7 @@ router.get(
 );
 
 router.get(
-  "/adminDashboard",
+  "/adminAccesstoHistory",
   adminDashboard
 );
 
