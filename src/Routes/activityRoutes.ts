@@ -1,20 +1,25 @@
 import express from "express";
-
 import {
-  startSession,
-  completeSession,
-  getActivityHistory,
-  adminDashboard
+  updateSessionStatus,
+  // getActivityHistory,
+  // adminDashboard
 } from "../controllers/activityController";
 
 const router = express.Router();
 
-router.put("/startSession/:bookingId", startSession);
+router.put(
+  "/updateSession/:userId/:courseId/:bookingId/:status",
+  updateSessionStatus
+);
 
-router.put("/completeSession/:bookingId", completeSession);
+// router.get(
+//   "/getActivityHistory/:studentId",
+//   getActivityHistory
+// );
 
-router.get("/getActivityHistory/:studentId", getActivityHistory);
-
-router.get("/activityadminDashboard", adminDashboard);
+// router.get(
+//   "/adminDashboard",
+//   adminDashboard
+// );
 
 export default router;
