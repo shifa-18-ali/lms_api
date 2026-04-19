@@ -61,7 +61,7 @@ export const getTeacherByEmail = async (req: Request, res: Response) => {
     if (!teacher) {
       return res.status(404).json({ message: "Teacher profile not found" });
     }
-      const courses = (teacher.assigned_courseid || []).map(course => ({
+      const courses = (teacher.assigned_courseid || []).map((course :any) => ({
       coursename: course.courseTitle,
       id: course._id
     }));
