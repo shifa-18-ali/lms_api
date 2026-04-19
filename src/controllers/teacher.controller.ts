@@ -122,3 +122,35 @@ export const deleteTeacher = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error deleting teacher", error });
   }
 };
+
+export const getAssignedCourseByTeacher = async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.params;
+
+    // ✅ Find teacher by userId
+    const teacher = await Teacher.findOne({ userId: _id })
+      .populate("assigned_courseid", "courseTitle");
+
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+
+    // ✅ Format response
+    const courses = (teacher.assigned_courseid || []).map((course: any) => ({
+      id: course._id,
+      coursename: course.courseTitle
+    }));
+
+    res.status(200).json({
+      total: courses.length,
+      courses
+    });
+
+  } catch (error: any) {
+    console.error("Error fetching assigned courses:", error);
+    res.status(500).json({
+      message: "Server error",
+      error: error.message
+    });
+  }
+};
