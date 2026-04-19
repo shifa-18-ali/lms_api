@@ -20,67 +20,103 @@ export const getUser = async (req: Request, res: Response) => {
 
 
 
-
-
-
-export const register = async (req:Request, res:Response) => {
+export const register = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, role, experience,
+    const {
+      name,
+      email,
+      password,
+      role,
+      experience,
+      dob,
+      phoneNo,
+      address,
+      bio,
+      qualification,
+      specialization,
+      assigned_courseid, // ✅ updated field
+      profile_picture
+    } = req.body;
 
-dob,
-phoneNo,
-address,
-bio,
-qualification,
-specialization,
-assigned_courses,
-profile_picture,
-
- } = req.body;
-
-    // Check if user exists
+    // ✅ Check if user already exists
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "User already exists" });
-
-    // Hash password
-    // const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user
-    const user = new User({ name, email, password, role }); //for hased password - password:hashedPassword
-    const savedUser = await user.save();
-
-    // Save in role-specific collection
-try {
-   if (role === "student") {
-const student = new Student({ userId: savedUser._id, dob
- });
-      await student.save();
-    } else if (role === "teacher") {
-      const teacher = new Teacher({ userId: savedUser._id, experience,
-
-dob,
-phoneNo,
-address,
-bio,
-qualification,
-specialization,
-assigned_courses,
-profile_picture,});
-      await teacher.save();
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
     }
 
-} catch (err) {
-  console.error("Role-specific save error:", err);
-      return res.status(400).json({ message: "Role-specific save failed", error: err })
-}
+    // ✅ Hash password (IMPORTANT)
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
-   
-    res.status(201).json({ message: "User registered successfully", user: savedUser });
-  } catch (err) {
-  console.error("Registration Error Details:", err); // 👈 this logs the exact error
-  res.status(500).json({ message: "Server error", error: err });
-}
+    // ✅ Create user
+    const user = new User({
+      name,
+      email,
+      password,
+      role
+    });
 
+    const savedUser = await user.save();
+
+    // ✅ Role-based creation
+    try {
+      if (role === "student") {
+        const student = new Student({
+          userId: savedUser._id,
+          dob
+        });
+
+        await student.save();
+
+      } else if (role === "teacher") {
+        const teacher = new Teacher({
+          userId: savedUser._id,
+          experience,
+          dob,
+          phoneNo,
+          address,
+          bio,
+          qualification,
+          specialization,
+
+          // ✅ IMPORTANT: only ObjectId array
+          assigned_courseid: assigned_courseid || [],
+
+          profile_picture
+        });
+
+        await teacher.save();
+      }
+
+    } catch (err: any) {
+      console.error("Role-specific save error:", err);
+
+      // ⚠️ Optional rollback (good practice)
+      await User.findByIdAndDelete(savedUser._id);
+
+      return res.status(400).json({
+        message: "Role-specific save failed",
+        error: err.message
+      });
+    }
+
+    // ✅ Final response
+    res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        id: savedUser._id,
+        name: savedUser.name,
+        email: savedUser.email,
+        role: savedUser.role
+      }
+    });
+
+  } catch (err: any) {
+    console.error("Registration Error Details:", err);
+    res.status(500).json({
+      message: "Server error",
+      error: err.message
+    });
+  }
 };
 ;
 

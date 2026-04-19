@@ -1,0 +1,15 @@
+updateteacher api modification :
+->assigned_course name change (accepted course id)
+
+get teacher--- remove password field
+
+https://lms-api-f87o.onrender.com/getTeacherByEmail/aradhya@example.com
+[{coursename:’c++’, id:’1234’},{coursename:’c’,id:'55'}]
+
+
+
+-------- GET/getCourseByteacherId/:_id
+assigned course(teacher model se  assigned course nikalna hai uske baad couurse model me link krke sara data mikal ke dena hai)
+coursetitle,description..............................................................(all response get courses)
+
+ 

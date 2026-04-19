@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import Teacher from "../Model/teacherModel";
 import User from "../Model/userModel";
-
+import Course from '../Model/coursesModel'
 // export const createTeacher = async (req: Request, res: Response) => {
 //   try {
 //     const { name, bio,gender,dob, phoneNo,address, qualification, specialization,assigned_courses,profile_picture } = req.body;
@@ -48,15 +48,23 @@ export const getTeacherByEmail = async (req: Request, res: Response) => {
 
     // Find user with role = "teacher" and given email
     const user = await User.findOne({ email, role: "teacher" });
+
+      
+   
     if (!user) {
       return res.status(404).json({ message: "Teacher not found" });
     }
-
+ const teacher = await Teacher.findOne({ userId: user._id })
+      .populate("assigned_courseid", "courseTitle");
     // Find teacher details using userId reference
-    const teacher = await Teacher.findOne({ userId: user._id });
+    
     if (!teacher) {
       return res.status(404).json({ message: "Teacher profile not found" });
     }
+      const courses = (teacher.assigned_courseid || []).map(course => ({
+      coursename: course.courseTitle,
+      id: course._id
+    }));
 
     // Combine data for response
     const teacherData = {
@@ -71,7 +79,8 @@ export const getTeacherByEmail = async (req: Request, res: Response) => {
       bio: teacher.bio,
       qualification: teacher.qualification,
       specialization: teacher.specialization,
-      assigned_courses: teacher.assigned_courses,
+      assigned_courseid: courses,
+      //array object------------
       profile_picture: teacher.profile_picture
     };
 

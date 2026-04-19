@@ -10,7 +10,12 @@ const TeacherSchema=new mongoose.Schema({
     bio: { type: String },
     qualification: { type: String },
     specialization: { type: String },
-    assigned_courses: [{ type: String }],
+      assigned_courseid: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course"
+    }
+  ]
      profile_picture: {type:String,required:true},
 
 
