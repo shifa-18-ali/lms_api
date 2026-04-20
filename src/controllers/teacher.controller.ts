@@ -129,7 +129,7 @@ export const getAssignedCourseByTeacher = async (req: Request, res: Response) =>
 
     // ✅ Find teacher by userId
     const teacher = await Teacher.findOne({ userId: _id })
-      .populate("assigned_courseid", "courseTitle");
+      // .populate("assigned_courseid", "courseTitle");
 
     if (!teacher) {
       return res.status(404).json({ message: "Teacher not found" });
@@ -138,7 +138,10 @@ export const getAssignedCourseByTeacher = async (req: Request, res: Response) =>
     // ✅ Format response
     const courses = (teacher.assigned_courseid || []).map((course: any) => ({
       id: course._id,
-      coursename: course.courseTitle
+      coursename: course.courseTitle,
+      url:course.url,
+      description:course.description,
+      modules:course.modules
     }));
 
     res.status(200).json({
