@@ -31,7 +31,8 @@ import Course from '../Model/coursesModel'
 // 📚 Get all teachers
 export const getTeachers = async (req: Request, res: Response) => {
   try {
-    const teachers = await User.find({ role: "teacher" }).populate("profileId");
+    const teachers = await User.find({ role: "teacher" }).select("-password") // ❌ exclude password
+      .populate("profileId");
  
     res.status(200).json(teachers);
   } catch (error) {
