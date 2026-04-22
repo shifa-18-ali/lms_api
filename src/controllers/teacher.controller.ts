@@ -95,20 +95,65 @@ export const getTeacherByEmail = async (req: Request, res: Response) => {
 ;
 
 // ✏️ Update teacher
-export const updateTeacher = async (req:Request, res:Response) => {
+export const updateTeacher = async (req: Request, res: Response) => {
   try {
-    const updatedTeacher = await User.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      // { new: true, runValidators: true }
-    );
+    const { id } = req.params;
 
-    if (!updatedTeacher)
+    // 🔹 Split fields
+    const {
+      name,
+      email,
+      experience,
+      dob,
+      phoneNo,
+      address,
+      bio,
+      qualification,
+      specialization,
+      assigned_courseid,
+      profile_picture
+    } = req.body;
+
+    // ✅ Update User collection
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { name, email },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updatedUser) {
       return res.status(404).json({ message: "Teacher not found" });
+    }
 
-    res.status(200).json(updatedTeacher);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating teacher", error: error});
+    // ✅ Update Teacher collection
+    const updatedTeacher = await Teacher.findOneAndUpdate(
+      { userId: id },
+      {
+        experience,
+        dob,
+        phoneNo,
+        address,
+        bio,
+        qualification,
+        specialization,
+        assigned_courseid,
+        profile_picture
+      },
+      { new: true, runValidators: true }
+    ).populate("assigned_courseid"); // optional
+
+    res.status(200).json({
+      message: "Teacher updated successfully",
+      user: updatedUser,
+      teacher: updatedTeacher
+    });
+
+  } catch (error: any) {
+    console.error("Update Teacher Error:", error);
+    res.status(500).json({
+      message: "Error updating teacher",
+      error: error.message
+    });
   }
 };
 ;
