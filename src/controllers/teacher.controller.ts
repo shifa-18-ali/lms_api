@@ -97,7 +97,7 @@ export const getTeacherByEmail = async (req: Request, res: Response) => {
 // ✏️ Update teacher
 export const updateTeacher = async (req:Request, res:Response) => {
   try {
-    const updatedTeacher = await Teacher.findByIdAndUpdate(
+    const updatedTeacher = await User.findByIdAndUpdate(
       req.params.id,
       req.body,
       // { new: true, runValidators: true }
