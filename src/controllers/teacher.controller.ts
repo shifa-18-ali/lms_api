@@ -100,7 +100,7 @@ export const updateTeacher = async (req:Request, res:Response) => {
     const updatedTeacher = await Teacher.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true }
+      // { new: true, runValidators: true }
     );
 
     if (!updatedTeacher)
