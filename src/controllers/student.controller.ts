@@ -108,7 +108,7 @@ export const deleteStudent = async (req: Request, res: Response) => {
 
 export const getStudentByName = async(req:Request,res:Response)=>{
 try {
-  const student=await User.find({}).select("_id name")
+  const student=await User.find({role:"student"}).select("_id name")
   res.status(200).json(student)
 } catch (error) {
   res.status(500).json({message:'something wrong',error})
