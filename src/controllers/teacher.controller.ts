@@ -56,7 +56,8 @@ export const getTeacherByEmail = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Teacher not found" });
     }
  const teacher = await Teacher.findOne({ userId: user._id })
-      .populate("assigned_courseid", "courseTitle", "courseassigned_studentid ","name");
+      .populate("assigned_courseid", "courseTitle")
+      .populate("courseassigned_studentid ","name")
     // Find teacher details using userId reference
     
     if (!teacher) {
