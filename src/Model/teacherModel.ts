@@ -16,6 +16,13 @@ const TeacherSchema=new mongoose.Schema({
       ref: "Course"
     }
   ],
+  
+         courseassigned_studentid: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Student"
+        }
+      ],
      profile_picture: {type:String,required:true},
 
 

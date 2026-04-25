@@ -34,7 +34,8 @@ export const register = async (req: Request, res: Response) => {
       bio,
       qualification,
       specialization,
-      assigned_courseid, // ✅ updated field
+      assigned_courseid,
+      courseassigned_studentid, // ✅ updated field
       profile_picture
     } = req.body;
 
@@ -80,6 +81,7 @@ export const register = async (req: Request, res: Response) => {
 
           // ✅ IMPORTANT: only ObjectId array
           assigned_courseid: assigned_courseid || [],
+          courseassigned_studentid:courseassigned_studentid||[],
 
           profile_picture
         });
