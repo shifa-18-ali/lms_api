@@ -91,7 +91,7 @@ export const getTeacherByEmail = async (req: Request, res: Response) => {
       specialization: teacher.specialization,
 
       assigned_courseid: courses,              // courses array
-      courseassigned_students: students,       // 🔥 added students array
+      courseassigned_studentid: students,       // 🔥 added students array
 
       profile_picture: teacher.profile_picture
     };
