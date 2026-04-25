@@ -1,0 +1,14 @@
+-->getstudentname (GET)
+{
+student id , name
+}
+
+getteacherassignedcourse
+{
+assignedstudent :[{id :''name}]
+}
+https://lms-api-f87o.onrender.com/getassignedCourseByStudent/_id Get
+{
+student name :
+student details
+}

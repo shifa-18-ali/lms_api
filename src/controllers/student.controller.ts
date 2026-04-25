@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import Student from "../Model/studentModel";
 import User from "../Model/userModel"
+import { profile } from "console";
 // 🎓 Create a new student
 // export const createStudent = async (req: Request, res: Response) => {
 //   try {
@@ -104,3 +105,13 @@ export const deleteStudent = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error deleting student", error });
   }
 };
+
+export const getStudentByName = async(req:Request,res:Response)=>{
+try {
+  const student=await User.find({role:"student"}).populate("name")
+  res.status(200).json(student)
+} catch (error) {
+  res.status(500).json({message:'something wrong',error})
+}
+
+}
