@@ -20,7 +20,7 @@ const TeacherSchema=new mongoose.Schema({
          courseassigned_studentid: [
         {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Student"
+          ref: "User"
         }
       ],
      profile_picture: {type:String,required:true},
