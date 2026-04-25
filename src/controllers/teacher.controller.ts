@@ -45,39 +45,43 @@ export const getTeachers = async (req: Request, res: Response) => {
 
 export const getTeacherByEmail = async (req: Request, res: Response) => {
   try {
-    const { email } = req.params; // email from URL param
+    const { email } = req.params;
 
-    // Find user with role = "teacher" and given email
-    const user = await User.findOne({ email, role: "teacher" });
+    // ✅ Find teacher user
+    const user = await User.findOne({ email, role: "teacher" }).select("-password");
 
-      
-   
     if (!user) {
       return res.status(404).json({ message: "Teacher not found" });
     }
- const teacher = await Teacher.findOne({ userId: user._id })
+
+    // ✅ Populate BOTH courses + students
+    const teacher = await Teacher.findOne({ userId: user._id })
       .populate("assigned_courseid", "courseTitle")
-      .populate("courseassigned_studentid ","name")
-    // Find teacher details using userId reference
-    
+      .populate("courseassigned_studentid", "name"); // 🔥 added
+
     if (!teacher) {
       return res.status(404).json({ message: "Teacher profile not found" });
     }
-      const courses = (teacher.assigned_courseid || []).map((course :any) => ({
-      coursename: course.courseTitle,
-      id: course._id
-    }));
-    const students = (teacher.courseassigned_studentid || []).map((student :any) => ({
-      name: student.name,
-      id: student._id
+
+    // ✅ Format courses
+    const courses = (teacher.assigned_courseid || []).map((course: any) => ({
+      id: course._id,
+      coursename: course.courseTitle
     }));
 
-    // Combine data for response
+    // ✅ Format students
+    const students = (teacher.courseassigned_studentid || []).map((student: any) => ({
+      id: student._id,
+      name: student.name
+    }));
+
+    // ✅ Final response
     const teacherData = {
       _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
+
       experience: teacher.experience,
       dob: teacher.dob,
       phoneNo: teacher.phoneNo,
@@ -85,16 +89,21 @@ export const getTeacherByEmail = async (req: Request, res: Response) => {
       bio: teacher.bio,
       qualification: teacher.qualification,
       specialization: teacher.specialization,
-      assigned_courseid: courses,
-      courseassigned_studentid:students,
-      //array object------------
+
+      assigned_courseid: courses,              // courses array
+      courseassigned_students: students,       // 🔥 added students array
+
       profile_picture: teacher.profile_picture
     };
 
     res.status(200).json({ teacher: teacherData });
-  } catch (err) {
+
+  } catch (err: any) {
     console.error("Error fetching teacher by email:", err);
-    res.status(500).json({ message: "Server error", error: err});
+    res.status(500).json({
+      message: "Server error",
+      error: err.message
+    });
   }
 };
 ;
