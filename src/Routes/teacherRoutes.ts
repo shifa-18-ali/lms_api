@@ -5,7 +5,8 @@ import {
   getTeacherByEmail,
   updateTeacher,
   deleteTeacher,
-  getAssignedCourseByTeacher
+  getAssignedCourseByTeacher,
+  getStudentsByTeacher
 } from "../controllers/teacher.controller";
 
 const router = express.Router();
@@ -16,4 +17,5 @@ router.get("/getTeacherByEmail/:email", getTeacherByEmail);
 router.put("/upTeacher/:id", updateTeacher);
 router.delete("/delTeacher/:id", deleteTeacher);
 router.get('/getassignedCourseByteacher/:_id',getAssignedCourseByTeacher)
+router.get('/getStudentsByTeacher/:_id',getStudentsByTeacher)
 export default router;

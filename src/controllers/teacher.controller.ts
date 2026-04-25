@@ -211,3 +211,33 @@ export const getAssignedCourseByTeacher = async (req: Request, res: Response) =>
     });
   }
 };
+ export const getStudentsByTeacher = async (req: Request, res: Response) => {
+  try {
+    const { teacherId } = req.params;
+
+    const teacher = await Teacher.findOne({ userId: teacherId })
+      .populate("courseassigned_studentid", "name email dob");
+
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+
+    const students = (teacher.courseassigned_studentid || []).map((s: any) => ({
+      id: s._id,
+      name: s.name,
+      email: s.email,
+      dob:s.dob
+    }));
+
+    res.status(200).json({
+      totalStudents: students.length,
+      students
+    });
+
+  } catch (error: any) {
+    res.status(500).json({
+      message: "Error fetching students",
+      error: error.message
+    });
+  }
+};
