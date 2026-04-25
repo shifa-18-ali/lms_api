@@ -213,10 +213,10 @@ export const getAssignedCourseByTeacher = async (req: Request, res: Response) =>
 };
  export const getStudentsByTeacher = async (req: Request, res: Response) => {
   try {
-    // const { _id } = req.params._id;
+    const { _id } = req.params;
 
-    const teacher = await Teacher.findOne({ userId: req.params._id })
-      .populate("courseassigned_studentid");
+    const teacher = await Teacher.findOne({ userId: _id })
+      .populate("courseassigned_studentid", "name email dob");
 
     if (!teacher) {
       return res.status(404).json({ message: "Teacher not found" });
