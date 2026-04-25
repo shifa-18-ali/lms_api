@@ -56,7 +56,7 @@ export const getTeacherByEmail = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Teacher not found" });
     }
  const teacher = await Teacher.findOne({ userId: user._id })
-      .populate("assigned_courseid", "courseTitle");
+      .populate("assigned_courseid", "courseTitle", "courseassigned_studentid ","name");
     // Find teacher details using userId reference
     
     if (!teacher) {
@@ -65,6 +65,10 @@ export const getTeacherByEmail = async (req: Request, res: Response) => {
       const courses = (teacher.assigned_courseid || []).map((course :any) => ({
       coursename: course.courseTitle,
       id: course._id
+    }));
+    const students = (teacher.courseassigned_studentid || []).map((student :any) => ({
+      name: student.name,
+      id: student._id
     }));
 
     // Combine data for response
@@ -81,6 +85,7 @@ export const getTeacherByEmail = async (req: Request, res: Response) => {
       qualification: teacher.qualification,
       specialization: teacher.specialization,
       assigned_courseid: courses,
+      courseassigned_studentid:students,
       //array object------------
       profile_picture: teacher.profile_picture
     };
