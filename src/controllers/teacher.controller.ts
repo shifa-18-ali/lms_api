@@ -114,7 +114,6 @@ export const updateTeacher = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    // 🔹 Split fields
     const {
       name,
       email,
@@ -130,7 +129,7 @@ export const updateTeacher = async (req: Request, res: Response) => {
       profile_picture
     } = req.body;
 
-    // ✅ Update User collection
+    // ✅ Update User
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { name, email },
@@ -141,7 +140,7 @@ export const updateTeacher = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Teacher not found" });
     }
 
-    // ✅ Update Teacher collection
+    // ✅ Update Teacher + populate BOTH
     const updatedTeacher = await Teacher.findOneAndUpdate(
       { userId: id },
       {
@@ -157,12 +156,38 @@ export const updateTeacher = async (req: Request, res: Response) => {
         profile_picture
       },
       { new: true, runValidators: true }
-    ).populate("assigned_courseid"); // optional
+    )
+      .populate("assigned_courseid", "courseTitle")
+      .populate("courseassigned_studentid", "name"); // 🔥 IMPORTANT
+
+    if (!updatedTeacher) {
+      return res.status(404).json({ message: "Teacher profile not found" });
+    }
+
+    // ✅ Format students
+    const students = (updatedTeacher.courseassigned_studentid || []).map(
+      (student: any) => ({
+        id: student._id,
+        name: student.name
+      })
+    );
+
+    // ✅ Format courses (optional)
+    const courses = (updatedTeacher.assigned_courseid || []).map(
+      (course: any) => ({
+        id: course._id,
+        coursename: course.courseTitle
+      })
+    );
 
     res.status(200).json({
       message: "Teacher updated successfully",
       user: updatedUser,
-      teacher: updatedTeacher
+      teacher: {
+        ...updatedTeacher.toObject(),
+        assigned_courseid: courses,
+        courseassigned_studentid: students // 🔥 formatted output
+      }
     });
 
   } catch (error: any) {
