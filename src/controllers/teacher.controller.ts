@@ -126,6 +126,7 @@ export const updateTeacher = async (req: Request, res: Response) => {
       qualification,
       specialization,
       assigned_courseid,
+      courseassigned_studentid,
       profile_picture
     } = req.body;
 
@@ -152,6 +153,7 @@ export const updateTeacher = async (req: Request, res: Response) => {
         qualification,
         specialization,
         assigned_courseid,
+        courseassigned_studentid,
         profile_picture
       },
       { new: true, runValidators: true }
