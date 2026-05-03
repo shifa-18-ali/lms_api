@@ -198,11 +198,14 @@ export const getAssignedCourseByTeacher = async (req: Request, res: Response) =>
       return res.status(404).json({ message: "Teacher not found" });
     }
 
-   
+     const courses = (teacher.assigned_courseid || []).map((course: any) => ({
+      id: course._id,
+      coursename: course.courseTitle
+    }));
 
       res.status(200).json({
       total: teacher.assigned_courseid.length,
-      courses: teacher.assigned_courseid
+      courses: courses
     });
 
   } catch (error: any) {
