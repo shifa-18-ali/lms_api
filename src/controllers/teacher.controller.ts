@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import Teacher from "../Model/teacherModel";
 import User from "../Model/userModel";
 import Course from '../Model/coursesModel'
+import mongoose from "mongoose";
 // export const createTeacher = async (req: Request, res: Response) => {
 //   try {
 //     const { name, bio,gender,dob, phoneNo,address, qualification, specialization,assigned_courses,profile_picture } = req.body;
@@ -211,30 +212,37 @@ export const deleteTeacher = async (req: Request, res: Response) => {
   }
 };
 
-export const getAssignedCourseByTeacher = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
 
-    // ✅ Find teacher by userId
+
+export const getAssignedCourseByTeacher = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const id = req.params.id;
+
     const teacher = await Teacher.findOne({ userId: id })
-       .populate("assigned_courseid , courseTitle");
+      .populate("assigned_courseid", "courseTitle");
 
     if (!teacher) {
-      return res.status(404).json({ message: "Teacher not found" });
+      return res.status(404).json({
+        message: "Teacher not found"
+      });
     }
 
-     const courses = (teacher.assigned_courseid || []).map((course: any) => ({
-      id: course._id,
-      coursename: course.courseTitle
-    }));
+    const courses = (teacher.assigned_courseid || []).map(
+      (course: any) => ({
+        id: course._id,
+        coursename: course.courseTitle
+      })
+    );
 
-      res.status(200).json({
-      total: teacher.assigned_courseid.length,
-      courses: courses
+    res.status(200).json({
+      total: courses.length,
+      courses
     });
 
   } catch (error: any) {
-    console.error("Error fetching assigned courses:", error);
     res.status(500).json({
       message: "Server error",
       error: error.message
