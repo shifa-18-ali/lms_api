@@ -213,10 +213,10 @@ export const deleteTeacher = async (req: Request, res: Response) => {
 
 export const getAssignedCourseByTeacher = async (req: Request, res: Response) => {
   try {
-    const { _id } = req.params;
+    const { id } = req.params;
 
     // ✅ Find teacher by userId
-    const teacher = await Teacher.findOne({ userId: _id })
+    const teacher = await Teacher.findOne({ userId: id })
        .populate("assigned_courseid , courseTitle");
 
     if (!teacher) {
