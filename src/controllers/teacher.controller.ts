@@ -221,8 +221,11 @@ export const getAssignedCourseByTeacher = async (
   try {
     const id = req.params.id;
 
-    const teacher = await Teacher.findById( id )
-      .populate("assigned_courseid", "courseTitle");
+    console.log("Incoming ID:", id);
+
+    const teacher = await Teacher.findById(id);
+
+    console.log("Teacher Result:", teacher);
 
     if (!teacher) {
       return res.status(404).json({
@@ -230,19 +233,11 @@ export const getAssignedCourseByTeacher = async (
       });
     }
 
-    const courses = (teacher.assigned_courseid || []).map(
-      (course: any) => ({
-        id: course._id,
-        coursename: course.courseTitle
-      })
-    );
-
-    res.status(200).json({
-      total: courses.length,
-      courses
-    });
+    res.status(200).json(teacher);
 
   } catch (error: any) {
+    console.log("ERROR:", error);
+
     res.status(500).json({
       message: "Server error",
       error: error.message
