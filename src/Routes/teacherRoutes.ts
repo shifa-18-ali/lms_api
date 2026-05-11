@@ -17,5 +17,5 @@ router.get("/getTeacherByEmail/:email", getTeacherByEmail);
 router.put("/upTeacher/:id", updateTeacher);
 router.delete("/delTeacher/:id", deleteTeacher);
 router.get('/getassignedCourseByteacher/:id',getAssignedCourseByTeacher)
-router.get('/getStudentsByTeacher/:_id',getStudentsByTeacher)
+router.get('/getStudentsByTeacher/:id',getStudentsByTeacher)
 export default router;
