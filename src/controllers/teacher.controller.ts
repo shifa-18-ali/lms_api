@@ -219,7 +219,7 @@ export const getAssignedCourseByTeacher = async (
   res: Response
 ) => {
   try {
-    const _id = req.params.id;
+    const _id = req.params;
 
     const teacher = await Teacher.findOne({userId: _id })
       .populate("assigned_courseid", "courseTitle");
