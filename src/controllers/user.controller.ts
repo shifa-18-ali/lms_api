@@ -10,8 +10,9 @@ import { Types } from "mongoose";
 const secretKey = "mySuperSecretKey123";
 export const getUser = async (req: Request, res: Response) => {
   try {
-    const users = await User.find().populate("profileId")
-    .select('-password');
+    const users = await User.find().select('-password')
+    .populate("profileId")
+    ;
     return res.status(200).json(users);
   } catch (err) {
     return res
