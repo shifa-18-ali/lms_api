@@ -161,15 +161,15 @@ export const getUserByEmail = async (req: Request, res: Response) => {
     const { email } = req.params; // email comes from URL parameter
 
     // Find user by email
-    const user = await User.findOne({ email }).select('-password');
+    const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
     // Fetch role-specific data
     let roleData = null;
     if (user.role === "student") {
-      roleData = await Student.findOne({ userId: user._id });
+      roleData = await Student.findOne({ userId: user._id }).select('-password');
     } else if (user.role === "teacher") {
-      roleData = await Teacher.findOne({ userId: user._id });
+      roleData = await Teacher.findOne({ userId: user._id }).select('-password');
     }
 
     res.status(200).json({ user, roleData });
