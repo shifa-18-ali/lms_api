@@ -25,7 +25,8 @@ import { profile } from "console";
 // 📋 Get all students
 export const getStudents = async (req: Request, res: Response) => {
   try {
- const students = await User.find({ role: "student" }).populate("profileId");
+ const students = await User.find({ role: "student" }).select('-password')
+ .populate("profileId");
     res.status(200).json(students);
   } catch (error) {
     res.status(500).json({ message: "Error fetching students", error });
