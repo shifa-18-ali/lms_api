@@ -10,15 +10,14 @@ import { Types } from "mongoose";
 const secretKey = "mySuperSecretKey123";
 export const getUser = async (req: Request, res: Response) => {
   try {
-        const users = await User.find().populate("profileId");
+    const users = await User.find().populate("profileId");
     return res.status(200).json(users);
   } catch (err) {
-    return res.status(400).json({  message: "Error fetching users",error:err});
+    return res
+      .status(400)
+      .json({ message: "Error fetching users", error: err });
   }
 };
-
-
-
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -36,7 +35,7 @@ export const register = async (req: Request, res: Response) => {
       specialization,
       assigned_courseid,
       courseassigned_studentid, // ✅ updated field
-      profile_picture
+      profile_picture,
     } = req.body;
 
     // ✅ Check if user already exists
@@ -53,7 +52,7 @@ export const register = async (req: Request, res: Response) => {
       name,
       email,
       password,
-      role
+      role,
     });
 
     const savedUser = await user.save();
@@ -63,11 +62,10 @@ export const register = async (req: Request, res: Response) => {
       if (role === "student") {
         const student = new Student({
           userId: savedUser._id,
-          dob
+          dob,
         });
 
         await student.save();
-
       } else if (role === "teacher") {
         const teacher = new Teacher({
           userId: savedUser._id,
@@ -81,14 +79,13 @@ export const register = async (req: Request, res: Response) => {
 
           // ✅ IMPORTANT: only ObjectId array
           assigned_courseid: assigned_courseid || [],
-          courseassigned_studentid:courseassigned_studentid||[],
+          courseassigned_studentid: courseassigned_studentid || [],
 
-          profile_picture
+          profile_picture,
         });
 
         await teacher.save();
       }
-
     } catch (err: any) {
       console.error("Role-specific save error:", err);
 
@@ -97,7 +94,7 @@ export const register = async (req: Request, res: Response) => {
 
       return res.status(400).json({
         message: "Role-specific save failed",
-        error: err.message
+        error: err.message,
       });
     }
 
@@ -108,38 +105,32 @@ export const register = async (req: Request, res: Response) => {
         id: savedUser._id,
         name: savedUser.name,
         email: savedUser.email,
-        role: savedUser.role
-      }
+        role: savedUser.role,
+      },
     });
-
   } catch (err: any) {
     console.error("Registration Error Details:", err);
     res.status(500).json({
       message: "Server error",
-      error: err.message
+      error: err.message,
     });
   }
 };
-;
-
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find().populate("profileId");
+    const users = await User.find().populate("profileId")
+    .select("-password");
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: "Error fetching users", error: err });
   }
 };
-;
-;
-;
-
 // 🔹 Login user
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
- const user = await User.findOne({ email }).populate("profileId");
+    const user = await User.findOne({ email }).populate("profileId");
     if (!user)
       return res.status(400).json({ message: "Invalid email or password" });
 
@@ -153,20 +144,15 @@ export const login = async (req: Request, res: Response) => {
     //     expiresIn: "1h",
     //   });
 
-      res.json({
-        message: "Login successful",
-        // token,
-        user
-      });
-    }
-   catch (err: any) {
+    res.json({
+      message: "Login successful",
+      // token,
+      user,
+    });
+  } catch (err: any) {
     res.status(500).json({ message: err.message });
   }
 };
-
-
-
-
 
 export const getUserByEmail = async (req: Request, res: Response) => {
   try {
@@ -190,5 +176,3 @@ export const getUserByEmail = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error", error: err });
   }
 };
-;
-;
