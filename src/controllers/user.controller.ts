@@ -61,14 +61,27 @@ export const register = async (req: Request, res: Response) => {
 
     // ✅ Role-based creation
     try {
-      if (role === "student") {
-        const student = new Student({
-          userId: savedUser._id,
-          dob,
-        });
+     if (role === "student") {
 
-        await student.save();
-      } else if (role === "teacher") {
+  const student = new Student({
+
+    userId: savedUser._id,
+
+    dob,
+    phoneNo,
+    address,
+    qualification,
+    
+    profile_picture,
+   
+  
+
+    enrolled_courseid: []
+
+  });
+
+  await student.save();
+} else if (role === "teacher") {
         const teacher = new Teacher({
           userId: savedUser._id,
           experience,
