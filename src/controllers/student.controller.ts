@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import Student from "../Model/studentModel";
 import User from "../Model/userModel"
 import { profile } from "console";
+import { SocketAddress } from "net";
 // 🎓 Create a new student
 // export const createStudent = async (req: Request, res: Response) => {
 //   try {
@@ -62,6 +63,12 @@ export const getStudentByEmail = async (req: Request, res: Response) => {
       email: user.email,
       role: user.role,
       dob: student.dob,
+      phoneNo:student.phoneNo,
+      qualification:student.qualification,
+      profile_picture:student.profile_picture,
+
+  enrolled_courseid:student.enrolled_courseid,
+
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

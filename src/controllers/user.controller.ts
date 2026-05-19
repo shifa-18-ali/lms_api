@@ -23,67 +23,109 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
   try {
+
     const {
+
       name,
       email,
       password,
       role,
+
+      // teacher fields
       experience,
+      specialization,
+
+      // common fields
       dob,
       phoneNo,
       address,
       bio,
       qualification,
-      specialization,
-      assigned_courseid,
-      courseassigned_studentid, // ✅ updated field
       profile_picture,
+
+      // student fields
+    
+
+      // course fields
+      assigned_courseid,
+      enrolled_courseid
+
     } = req.body;
 
-    // ✅ Check if user already exists
+    // =====================================================
+    // ✅ CHECK EXISTING USER
+    // =====================================================
+
     const existingUser = await User.findOne({ email });
+
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({
+        message: "User already exists"
+      });
     }
 
-    // ✅ Hash password (IMPORTANT)
+    // =====================================================
+    // ✅ HASH PASSWORD (OPTIONAL)
+    // =====================================================
+
     // const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Create user
+    // =====================================================
+    // ✅ CREATE USER
+    // =====================================================
+
     const user = new User({
       name,
       email,
       password,
-      role,
+      role
     });
 
     const savedUser = await user.save();
 
-    // ✅ Role-based creation
+    // =====================================================
+    // ✅ ROLE-BASED DOCUMENT CREATION
+    // =====================================================
+
     try {
-     if (role === "student") {
 
-  const student = new Student({
+      // =================================================
+      // ✅ STUDENT REGISTER
+      // =================================================
 
-    userId: savedUser._id,
+      if (role === "student") {
 
-    dob,
-    phoneNo,
-    address,
-    qualification,
-    
-    profile_picture,
-   
-  
+        const student = new Student({
 
-    enrolled_courseid: []
-
-  });
-
-  await student.save();
-} else if (role === "teacher") {
-        const teacher = new Teacher({
           userId: savedUser._id,
+
+          dob,
+          phoneNo,
+          address,
+          qualification,
+     
+          profile_picture,
+
+        
+
+          // initially empty
+          enrolled_courseid: enrolled_courseid || []
+
+        });
+
+        await student.save();
+      }
+
+      // =================================================
+      // ✅ TEACHER REGISTER
+      // =================================================
+
+      else if (role === "teacher") {
+
+        const teacher = new Teacher({
+
+          userId: savedUser._id,
+
           experience,
           dob,
           phoneNo,
@@ -91,43 +133,51 @@ export const register = async (req: Request, res: Response) => {
           bio,
           qualification,
           specialization,
-
-          // ✅ IMPORTANT: only ObjectId array
-          assigned_courseid: assigned_courseid || [],
-          courseassigned_studentid: courseassigned_studentid || [],
-
           profile_picture,
+
+          // initially empty
+          assigned_courseid: assigned_courseid || []
+
         });
 
         await teacher.save();
       }
+
     } catch (err: any) {
+
       console.error("Role-specific save error:", err);
 
-      // ⚠️ Optional rollback (good practice)
+      // ✅ rollback user if role save fails
       await User.findByIdAndDelete(savedUser._id);
 
       return res.status(400).json({
         message: "Role-specific save failed",
-        error: err.message,
+        error: err.message
       });
     }
 
-    // ✅ Final response
+    // =====================================================
+    // ✅ SUCCESS RESPONSE
+    // =====================================================
+
     res.status(201).json({
       message: "User registered successfully",
+
       user: {
         id: savedUser._id,
         name: savedUser.name,
         email: savedUser.email,
-        role: savedUser.role,
-      },
+        role: savedUser.role
+      }
     });
+
   } catch (err: any) {
+
     console.error("Registration Error Details:", err);
+
     res.status(500).json({
       message: "Server error",
-      error: err.message,
+      error: err.message
     });
   }
 };
