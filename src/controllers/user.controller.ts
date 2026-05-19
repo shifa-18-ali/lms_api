@@ -34,7 +34,7 @@ export const register = async (req: Request, res: Response) => {
       // teacher fields
       experience,
       specialization,
-
+guardian,
       // common fields
       dob,
       phoneNo,
@@ -106,7 +106,7 @@ export const register = async (req: Request, res: Response) => {
      
           profile_picture,
 
-        
+        guardian,
 
           // initially empty
           enrolled_courseid: enrolled_courseid || []

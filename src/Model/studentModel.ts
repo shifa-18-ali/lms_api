@@ -36,7 +36,9 @@ const studentSchema = new mongoose.Schema({
       ref: "Course"
     }
   ],
-
+guardian :{
+  type:String
+}
   
  
 

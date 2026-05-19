@@ -66,7 +66,7 @@ export const getStudentByEmail = async (req: Request, res: Response) => {
       phoneNo:student.phoneNo,
       qualification:student.qualification,
       profile_picture:student.profile_picture,
-
+guardian:student.guardian,
   enrolled_courseid:student.enrolled_courseid,
 
       createdAt: user.createdAt,
