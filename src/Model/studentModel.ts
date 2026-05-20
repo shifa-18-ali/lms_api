@@ -38,9 +38,20 @@ const studentSchema = new mongoose.Schema({
   ],
 guardian :{
   type:String
-}
+},
   
- 
+ assigned_courseId:[
+  {
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Course"
+  }
+ ],
+ assigned_teacherId:[
+  {
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Teacher'
+  }
+ ]
 
 },
 {

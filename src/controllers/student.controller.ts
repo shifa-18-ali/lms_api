@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import Student from "../Model/studentModel";
-import User from "../Model/userModel"
+import User from "../Model/userModel";
 import { profile } from "console";
 import { SocketAddress } from "net";
 // 🎓 Create a new student
@@ -9,8 +9,6 @@ import { SocketAddress } from "net";
 //   try {
 //     const { name, type,gender } = req.body;
 
-
- 
 //     const newStudent = await Student.create({
 //       name,
 //       type,
@@ -26,18 +24,14 @@ import { SocketAddress } from "net";
 // 📋 Get all students
 export const getStudents = async (req: Request, res: Response) => {
   try {
- const students = await User.find({ role: "student" }).select('-password')
- .populate("profileId");
+    const students = await User.find({ role: "student" })
+      .select("-password")
+      .populate("profileId");
     res.status(200).json(students);
   } catch (error) {
     res.status(500).json({ message: "Error fetching students", error });
   }
 };
-
-
-
-
-
 
 export const getStudentByEmail = async (req: Request, res: Response) => {
   try {
@@ -46,14 +40,20 @@ export const getStudentByEmail = async (req: Request, res: Response) => {
     // Find the user first
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "User not found with this email" });
+      return res
+        .status(404)
+        .json({ message: "User not found with this email" });
     }
 
     // Find the student details linked with this user
-    const student = await Student.findOne({ userId: user._id }).populate("userId");
+    const student = await Student.findOne({ userId: user._id }).populate(
+      "userId",
+    );
 
     if (!student) {
-      return res.status(404).json({ message: "Student profile not found for this user" });
+      return res
+        .status(404)
+        .json({ message: "Student profile not found for this user" });
     }
 
     // Combine both user and student details in a single response
@@ -63,11 +63,11 @@ export const getStudentByEmail = async (req: Request, res: Response) => {
       email: user.email,
       role: user.role,
       dob: student.dob,
-      phoneNo:student.phoneNo,
-      qualification:student.qualification,
-      profile_picture:student.profile_picture,
-guardian:student.guardian,
-  enrolled_courseid:student.enrolled_courseid,
+      phoneNo: student.phoneNo,
+      qualification: student.qualification,
+      profile_picture: student.profile_picture,
+      guardian: student.guardian,
+      enrolled_courseid: student.enrolled_courseid,
 
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -80,28 +80,103 @@ guardian:student.guardian,
   }
 };
 
-;
-
-
-
 export const updateStudent = async (req: Request, res: Response) => {
   try {
-    const updatedStudent = await Student.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const { id } = req.params;
 
-    if (!updatedStudent) {
+    const {
+      name,
+      email,
+      dob,
+
+      phoneNo,
+
+      address,
+
+      qualification,
+
+      profile_picture,
+
+      enrolled_courseid,
+      guardian,
+
+      assigned_courseId,
+      assigned_teacherId,
+    } = req.body;
+
+    // ✅ Update User
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { name, email },
+      { new: true, runValidators: true },
+    ).select("-password");
+
+    if (!updatedUser) {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    res.status(200).json(updatedStudent);
+    // ✅ Update Teacher + populate BOTH
+    const updatedStudent = await Student.findOneAndUpdate(
+      { userId: id },
+      {
+        dob,
+
+        phoneNo,
+
+        address,
+
+        qualification,
+
+        profile_picture,
+
+        enrolled_courseid,
+        guardian,
+
+        assigned_courseId,
+        assigned_teacherId,
+      },
+      { new: true, runValidators: true },
+    )
+      .populate("assigned_courseId", "courseTitle")
+      .populate("  assigned_teacherId", "name"); // 🔥 IMPORTANT
+
+    if (!updatedStudent) {
+      return res.status(404).json({ message: "Teacher profile not found" });
+    }
+
+    // ✅ Format students
+    const teacher = (updatedStudent.assigned_teacherId || []).map(
+      (teacher: any) => ({
+        id: teacher._id,
+        name: teacher.name,
+      }),
+    );
+
+    // ✅ Format courses (optional)
+    const courses = (updatedStudent.assigned_courseId || []).map(
+      (course: any) => ({
+        id: course._id,
+        coursename: course.courseTitle,
+      }),
+    );
+
+    res.status(200).json({
+      message: "Teacher updated successfully",
+      user: updatedUser,
+      teacher: {
+        ...updatedStudent.toObject(),
+        assigned_courseid: courses,
+        courseassigned_studentid: teacher, // 🔥 formatted output
+      },
+    });
   } catch (error: any) {
-    res.status(500).json({ message: "Error updating student", error: error.message });
+    console.error("Update Student Error:", error);
+    res.status(500).json({
+      message: "Error updating student",
+      error: error.message,
+    });
   }
 };
-
 
 // 🗑️ Delete student
 export const deleteStudent = async (req: Request, res: Response) => {
@@ -114,13 +189,11 @@ export const deleteStudent = async (req: Request, res: Response) => {
   }
 };
 
-export const getStudentByName = async(req:Request,res:Response)=>{
-try {
-  const student=await User.find({role:"student"}).select("_id name")
-  res.status(200).json(student)
-} catch (error) {
-  res.status(500).json({message:'something wrong',error})
-}
-
-}
-
+export const getStudentByName = async (req: Request, res: Response) => {
+  try {
+    const student = await User.find({ role: "student" }).select("_id name");
+    res.status(200).json(student);
+  } catch (error) {
+    res.status(500).json({ message: "something wrong", error });
+  }
+};
