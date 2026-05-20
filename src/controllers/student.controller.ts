@@ -162,9 +162,9 @@ export const updateStudent = async (req: Request, res: Response) => {
     );
 
     res.status(200).json({
-      message: "Teacher updated successfully",
+      message: "Student updated successfully",
       user: updatedUser,
-      teacher: {
+      student: {
         ...updatedStudent.toObject(),
         assigned_courseid: courses,
         courseassigned_studentid: teacher, // 🔥 formatted output
