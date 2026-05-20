@@ -161,15 +161,34 @@ export const updateStudent = async (req: Request, res: Response) => {
       }),
     );
 
-    res.status(200).json({
-      message: "Student updated successfully",
-      user: updatedUser,
-      student: {
-        ...updatedStudent.toObject(),
-        assigned_courseId: courses,
-        assigned_teacherId: teacher, // 🔥 formatted output
-      },
-    });
+   res.status(200).json({
+  message: "Student updated successfully",
+
+  user: updatedUser,
+
+  student: {
+
+    _id: updatedStudent._id,
+
+    userId: updatedStudent.userId,
+
+    dob: updatedStudent.dob,
+
+    phoneNo: updatedStudent.phoneNo,
+
+    address: updatedStudent.address,
+
+    qualification: updatedStudent.qualification,
+
+    profile_picture: updatedStudent.profile_picture,
+
+    guardian: updatedStudent.guardian,
+
+    assigned_courseId: courses,
+
+    assigned_teacherId: teacher
+  }
+});
   } catch (error: any) {
     console.error("Update Student Error:", error);
     res.status(500).json({
