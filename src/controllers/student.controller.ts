@@ -136,9 +136,10 @@ export const updateStudent = async (req: Request, res: Response) => {
         assigned_teacherId,
       },
       { new: true, runValidators: true },
-    )
+    ) 
+ 
       .populate("assigned_courseId", "courseTitle")
-      .populate("  assigned_teacherId", "name"); // 🔥 IMPORTANT
+      .populate("assigned_teacherId", "name"); // 🔥 IMPORTANT
 
     if (!updatedStudent) {
       return res.status(404).json({ message: "Teacher profile not found" });
