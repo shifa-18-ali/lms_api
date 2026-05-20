@@ -167,7 +167,7 @@ export const updateStudent = async (req: Request, res: Response) => {
       student: {
         ...updatedStudent.toObject(),
         assigned_courseId: courses,
-        courseassigned_studentid: teacher, // 🔥 formatted output
+        assigned_teacherId: teacher, // 🔥 formatted output
       },
     });
   } catch (error: any) {
