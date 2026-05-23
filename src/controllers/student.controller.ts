@@ -55,7 +55,20 @@ export const getStudentByEmail = async (req: Request, res: Response) => {
         .status(404)
         .json({ message: "Student profile not found for this user" });
     }
+ const teacher = (student.assigned_teacherId || []).map(
+      (teacher: any) => ({
+        id: teacher._id,
+        name: teacher.name,
+      }),
+    );
 
+    // ✅ Format courses (optional)
+    const courses = (student.assigned_courseId || []).map(
+      (course: any) => ({
+        id: course._id,
+        coursename: course.courseTitle,
+      }),
+    );
     // Combine both user and student details in a single response
     const fullDetails = {
       _id: user._id,
@@ -69,8 +82,8 @@ export const getStudentByEmail = async (req: Request, res: Response) => {
       guardian: student.guardian,
       enrolled_courseid: student.enrolled_courseid,
 
-      assigned_courseId: student.assigned_courseId,
-      assigned_teacherId: student.assigned_teacherId,
+      assigned_courseId: courses,
+      assigned_teacherId: teacher,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
