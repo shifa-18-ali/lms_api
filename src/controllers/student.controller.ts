@@ -46,9 +46,9 @@ export const getStudentByEmail = async (req: Request, res: Response) => {
     }
 
     // Find the student details linked with this user
-    const student = await Student.findOne({ userId: user._id }).populate(
-      "userId",
-    );
+    const student = await Student.findOne({ userId: user._id })
+      .populate("assigned_courseId", "courseTitle")
+      .populate("assigned_teacherId", "name")
 
     if (!student) {
       return res
@@ -68,9 +68,9 @@ export const getStudentByEmail = async (req: Request, res: Response) => {
       profile_picture: student.profile_picture,
       guardian: student.guardian,
       enrolled_courseid: student.enrolled_courseid,
-    
-      assigned_courseId:student.assigned_courseId,
-      assigned_teacherId:student.assigned_teacherId,
+
+      assigned_courseId: student.assigned_courseId,
+      assigned_teacherId: student.assigned_teacherId,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
@@ -138,8 +138,8 @@ export const updateStudent = async (req: Request, res: Response) => {
         assigned_teacherId,
       },
       { new: true, runValidators: true },
-    ) 
- 
+    )
+
       .populate("assigned_courseId", "courseTitle")
       .populate("assigned_teacherId", "name"); // 🔥 IMPORTANT
 
@@ -163,34 +163,33 @@ export const updateStudent = async (req: Request, res: Response) => {
       }),
     );
 
-   res.status(200).json({
-  message: "Student updated successfully",
+    res.status(200).json({
+      message: "Student updated successfully",
 
-  user: updatedUser,
+      user: updatedUser,
 
-  student: {
+      student: {
+        _id: updatedStudent._id,
 
-    _id: updatedStudent._id,
+        userId: updatedStudent.userId,
 
-    userId: updatedStudent.userId,
+        dob: updatedStudent.dob,
 
-    dob: updatedStudent.dob,
+        phoneNo: updatedStudent.phoneNo,
 
-    phoneNo: updatedStudent.phoneNo,
+        address: updatedStudent.address,
 
-    address: updatedStudent.address,
+        qualification: updatedStudent.qualification,
 
-    qualification: updatedStudent.qualification,
+        profile_picture: updatedStudent.profile_picture,
 
-    profile_picture: updatedStudent.profile_picture,
+        guardian: updatedStudent.guardian,
 
-    guardian: updatedStudent.guardian,
+        assigned_courseId: courses,
 
-    assigned_courseId: courses,
-
-    assigned_teacherId: teacher
-  }
-});
+        assigned_teacherId: teacher,
+      },
+    });
   } catch (error: any) {
     console.error("Update Student Error:", error);
     res.status(500).json({
